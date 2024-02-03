@@ -8,15 +8,10 @@ import Menu from '@mui/material/Menu';
 import Container from '@mui/material/Container';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import SignInButton from '../../assests/images/SignInButton.svg';
 import { makeStyles } from '@mui/styles';
-import Notification from '../../assests/images/notification.svg';
-import SignIn from '../../assests/images/SigninIcon.svg';
-import AppMainIcon from '../../assests/images/AppmainIcon.png';
 import Context from '../../context/Context';
-import LogoutIcon from '@mui/icons-material/Logout';
 import { useForm } from 'react-hook-form';
-import UserLog from '../../assests/images/UserLog.svg';
+import FishIcon from "../../assets/fishjum.svg"
 import PersonPinCircleTwoToneIcon from '@mui/icons-material/PersonPinCircleTwoTone';
 const useStyles = makeStyles((theme) => ({
   loginIcon: {
@@ -77,7 +72,7 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '7px',
     },
   },
-  headerIcon:{width: ' 23%', paddingTop: '1%', paddingBottom: ' 6px',cursor:"pointer" }
+  // headerIcon:{width: ' 23%', paddingTop: '1%', paddingBottom: ' 6px',cursor:"pointer" }
 }));
 
 const ResponsiveAppBar = (props) => {
@@ -140,7 +135,7 @@ const ResponsiveAppBar = (props) => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor: '#ffff',
+        backgroundColor:"#9dd9f3",
         color: 'red',
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
@@ -150,10 +145,8 @@ const ResponsiveAppBar = (props) => {
           <Typography
             variant="h6"
             component="a"
-            onClick={() => handleCloseNavMenu('/')}
-            className={classes.headerIcon}
-          >
-            <img src={AppMainIcon} width={"40%"} />
+            onClick={() => handleCloseNavMenu('/')}          >
+            <img src={FishIcon} width={"45%"}/>
           </Typography>
           <Box
             sx={{
@@ -164,8 +157,7 @@ const ResponsiveAppBar = (props) => {
             }}
           >
             {pages.map((page, index) => ( 
-              page != '' ?
-              
+              page != '' ?              
               <div
                 key={index}
                 onClick={() => handleCloseNavMenu(page?.path)}
@@ -176,20 +168,11 @@ const ResponsiveAppBar = (props) => {
               : ''
               
             ))}
-          </Box>
-          {!((customerId==undefined || customerId==null )&&(agentId==undefined||agentId==null))?
-            <div style={{ paddingTop: '5px' }}>
-              <img src={Notification} />
-              <div className={classes.notif}>
-                <span class={classes.num}>5</span>
-              </div>
-            </div>:""
-          }
-          &nbsp;         
+          </Box>       
             <Box>
               <Tooltip title="Use Info">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0,border:"1px solid #1a21b1" }}>
-                 <PersonPinCircleTwoToneIcon sx={{fontSize:"3.3rem",color:"#8c7eff"}}/>
+                 <PersonPinCircleTwoToneIcon sx={{fontSize:"2.5rem",color:"#8c7eff"}}/>
                 </IconButton>
               </Tooltip>
               <Menu

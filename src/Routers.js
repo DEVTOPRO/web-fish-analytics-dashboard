@@ -1,0 +1,44 @@
+import React, { useContext } from "react";
+import Customlayout from "./pages/Customlayout";
+import Defaultpage from "./common/components/Defaultpage";
+import DrawerMainPage from "./pages/DrawerHeader";
+import ErrorPage from "./pages/ErrorPage";
+import HomePage from "./pages/HomePage"
+import DailyAnalysis from "./pages/DailyAnalysis"
+import ClipsRepo from "./pages/ClipsRepos";
+import DetecionsRepo from "./pages/DetecionRepo";
+export default function Routers(Redirectpath, getConstValue) {
+  let route = [
+    {
+      path: "/",
+      element: <Customlayout Redirectpath={Redirectpath} />,
+      children: [
+        { index: "/", element: <DrawerMainPage Redirectpath={Redirectpath}/>,
+        children:[
+          {
+            index: true,
+            element: <HomePage Redirectpath={Redirectpath} />,
+          },
+          {
+            path: "/home-preview",
+            element: <DailyAnalysis Redirectpath={Redirectpath} />,
+          },
+          {
+            path: "/videoClipsPage",
+            element: <ClipsRepo Redirectpath={Redirectpath} />,
+          },
+          {
+            path: "/analyticsDetecionPage",
+            element: <DetecionsRepo Redirectpath={Redirectpath} />
+          },
+          
+        ]
+      },       
+        { path: "/signup", element: <div>hello user</div>},
+        { path: "/errorPage", element: <ErrorPage Redirectpath={Redirectpath}/> },
+      ],
+    },
+    { path: "*", element: <Defaultpage /> }, 
+  ];
+  return route;
+}
