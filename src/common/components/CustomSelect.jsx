@@ -55,7 +55,7 @@ export default function MultipleSelect() {
 
   return (
     <div>
-      <FormControl sx={{ m: 1, width: 300 }}>
+      <FormControl sx={{ m: 1 }}>
         <InputLabel id="demo-multiple-name-label">Select Registration type *</InputLabel>
         <Select
           labelId="demo-multiple-name-label"

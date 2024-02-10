@@ -37,6 +37,7 @@ const useStylesCustom = makeStyles(theme => ({
       // padding: "10px 10px 10px"
     },
     // height: '39px',
+    padding:'3px',
     marginTop: '5px',
   },
   selectStyles: {
@@ -46,6 +47,7 @@ const useStylesCustom = makeStyles(theme => ({
     marginBottom: '5px',
     fontSize: '16px',
     borderRadius: '4px',
+    padding:'4px',
     backgroundColor: '#fff',
     cursor: 'pointer',
     color: '#000',

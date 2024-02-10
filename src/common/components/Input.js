@@ -6,7 +6,7 @@ const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexWrap: 'wrap',
-    padding:"10px",
+    // padding:"10px",
   },
   margin: {
     width: '100%',
@@ -41,7 +41,7 @@ const useStylesCustom = makeStyles(theme => ({
     border: '1px solid #ced4da',
     fontSize: 16,
     padding: '8px 10px',
-    margin: '4px',
+    margin: '0px 4px',
     '&:hover': {
       backgroundColor: '#fff',
     },

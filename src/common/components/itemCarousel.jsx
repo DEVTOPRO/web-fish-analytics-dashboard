@@ -18,7 +18,7 @@ export default class Test extends React.Component {
       <ItemsCarousel
         // Placeholder configurations
         // enablePlaceholder
-        // numberOfPlaceholderItems={3}
+        // numberOfPlaceholderItems={3} 
         minimumPlaceholderTime={1000}
         // placeholderItem={<div style={{ height: 200, background: '#900' }}>Placeholder</div>}
 

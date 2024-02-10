@@ -3,6 +3,7 @@ import './App.css';
 import { Outlet, Link, useRoutes, useNavigate, useParams } from "react-router-dom";
 import Routers from './Routers';
 import Context from './context/Context';
+import { Fragment } from 'react';
 function App() {
   const context = useContext(Context);
   useLayoutEffect(() => {
@@ -19,8 +20,10 @@ function App() {
   let element = useRoutes(Routers(Redirectpath));
   // https://www.youtube.com/watch?v=MUrlzF2L_Rc&t=20s
   return (
-    <div >
+    <div>
+      <Fragment>
       {element}
+      </Fragment>
     </div>
   );
 }

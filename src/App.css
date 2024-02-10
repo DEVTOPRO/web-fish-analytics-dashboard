@@ -36,3 +36,32 @@
     transform: rotate(360deg);
   }
 }
+
+@media only screen and (max-width: 1020px) {
+  p {
+    font-size: 12px;
+  }
+}
+body::-webkit-scrollbar {
+  width: 0.7em;
+}
+
+body::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+body::-webkit-scrollbar-thumb {
+  background-image: linear-gradient(to bottom, rgb(255, 205, 205), #89edffcc);
+}
+select {
+}
+option {
+  padding: 10px;
+  margin: 10px;
+  line-height: 3;
+}
+option:checked {
+  color: #fff;
+  background-color: #fb2929;
+}
+

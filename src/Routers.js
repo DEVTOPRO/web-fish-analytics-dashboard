@@ -7,6 +7,7 @@ import HomePage from "./pages/HomePage"
 import DailyAnalysis from "./pages/DailyAnalysis"
 import ClipsRepo from "./pages/ClipsRepos";
 import DetecionsRepo from "./pages/DetecionRepo";
+import  VideoCollection  from "./pages/ToolVideos";
 export default function Routers(Redirectpath, getConstValue) {
   let route = [
     {
@@ -31,6 +32,7 @@ export default function Routers(Redirectpath, getConstValue) {
             path: "/analyticsDetecionPage",
             element: <DetecionsRepo Redirectpath={Redirectpath} />
           },
+          {path: "/video-farmes-viewer", element: <VideoCollection  Redirectpath={Redirectpath}/>}
           
         ]
       },       

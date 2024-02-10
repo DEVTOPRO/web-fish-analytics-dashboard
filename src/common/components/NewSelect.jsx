@@ -83,8 +83,6 @@ export default function NewSelect(props) {
   const classesCustom = useStylesCustom();
   const listData = props.listItems ? props.listItems : [];
   return (
-    
-    
     <div className={classes.root}>
       <select
         className={classesCustom.selectStyles}

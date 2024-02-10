@@ -14,6 +14,7 @@ import { useState } from 'react'
 const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
+
   vertical: {
     background: '#FB2929',
     borderRadius: '5px 0px 0px 5px',
@@ -25,16 +26,31 @@ const useStyles = makeStyles(theme => ({
     },
   },
   menuListStyle: {
-    backgroundColor: '#6d55e48f',
-    // margin: ' 14px',
+    backgroundColor: "#64afed9e",
+    // "#b9e4f8",
+    // '#6d55e48f',
     padding: '2px',
-    color: '#3147BA',
+    color: '#083c74',
     borderRadius: '5px ',
     marginLeft: '5px',
     marginBottom: '8px',
+    ['& .MuiListItemText-primary']:{
+fontWeight:'600',
+fontSize:'16px'
+    },
     ['@media (max-width:1020px)']: {
-      // margin: '5px',
       padding: '0px',
+    },
+    transition: 'transform .2s',
+    '&:hover': {
+      transform: 'scale(0.8)',
+      color: '#AB26A3',
+    },
+    '&:active': {
+      color: 'red',
+      boxShadow: 'inset 1px 0px 3px 4px #948bb94d',
+      transform: 'scale(0.6)',
+      borderRadius: '7px',
     },
   },
 }))
@@ -48,7 +64,7 @@ export default function DrawerMainPage (props) {
     setHighlightItem(name)
   }
   return (
-            <Box sx={{ display: 'flex',['& .MuiDrawer-paper']:{marginTop:"20px"} }}>
+            <Box sx={{ display: 'flex',['& .MuiDrawer-paper']:{marginTop:"20px"} }} className={classes.root}>
       <CssBaseline />
       <Drawer
         variant='permanent'
@@ -95,7 +111,7 @@ export default function DrawerMainPage (props) {
           </List>
         </Box>
       </Drawer>
-      <Box component='main' sx={{padding:'10px'}}>
+      <Box component='main' sx={{padding:'10px',width:"-webkit-fill-available"}}>
         <Outlet />
       </Box>
     </Box>

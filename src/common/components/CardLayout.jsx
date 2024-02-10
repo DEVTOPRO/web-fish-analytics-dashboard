@@ -6,7 +6,8 @@ const useStyles = makeStyles(theme => ({
     boxShadow: '0px 0px 10px #00000029',
     background: '#fff',
     borderRadius: '10px',
-    padding: '10px'
+    padding: '10px',
+    color:"#4839be"
     // minHeight:"130px"
     // transition: "transform .2s",
     // "&:hover": {
@@ -22,6 +23,7 @@ export default function CardLayout (props) {
     <div
       className={classes.cardLayout}
       style={props.style?props.style:{
+        backgroundImage: props.backgroundImage,
         backgroundColor: props.backgroundColor,
         marginBottom: props.marginBottom,
         margin: props.margin,
@@ -32,10 +34,9 @@ export default function CardLayout (props) {
         marginTop: props.marginTop,
         borderRadius: props.borderRadius,
         boxShadow: props.boxShadow,
-        backgroundImage: props.backgroundImage,
         fontSize: props.fontSize,
         marginLeft:props.marginLeft,
-        marginRight:props.marginRight,border:props.border     }}
+        marginRight:props.marginRight,border:props.border  }}
       onClick={props.handleSubmit}
     >
       {props.cardContent}

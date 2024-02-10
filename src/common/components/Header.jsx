@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     color: '#fff',
   },
   menuStyle: {
-    color: '#444444',
+    color: '#fff',
     cursor: 'pointer',
     padding: '10px',
     transition: 'transform .2s',
@@ -135,7 +135,7 @@ const ResponsiveAppBar = (props) => {
     <AppBar
       position="fixed"
       sx={{
-        backgroundColor:"#9dd9f3",
+        backgroundImage:"linear-gradient(90deg, #89edffcc 3.67%, #3147BA 114%)",
         color: 'red',
         zIndex: (theme) => theme.zIndex.drawer + 1,
       }}
@@ -171,8 +171,8 @@ const ResponsiveAppBar = (props) => {
           </Box>       
             <Box>
               <Tooltip title="Use Info">
-                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0,border:"1px solid #1a21b1" }}>
-                 <PersonPinCircleTwoToneIcon sx={{fontSize:"2.5rem",color:"#8c7eff"}}/>
+                <IconButton onClick={handleOpenUserMenu} sx={{ p: 0,border:"1px solid #d6daff" }}>
+                 <PersonPinCircleTwoToneIcon sx={{fontSize:"2.5rem",color:"#d6daff"}}/>
                 </IconButton>
               </Tooltip>
               <Menu

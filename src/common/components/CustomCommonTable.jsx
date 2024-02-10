@@ -10,24 +10,11 @@ import TableHead from '@mui/material/TableHead';
 import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
-import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import { visuallyHidden } from '@mui/utils';
-import ModeEditTwoToneIcon from '@mui/icons-material/ModeEditTwoTone';
-import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
-import ToggleSwitch from "./ToggleSwitch";
-function createData(name, calories, fat, carbs, protein) {
-  return {
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
-  };
-}
-
-
+import Select from "./NewSelect";
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -44,10 +31,7 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy);
 }
 
-// Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
-// stableSort() brings sort stability to non-modern browsers (notably IE11). If you
-// only support modern browsers you can replace stableSort(exampleArray, exampleComparator)
-// with exampleArray.slice().sort(exampleComparator)
+
 function stableSort(array, comparator) {
   const stabilizedThis = array.map((el, index) => [el, index]);
   stabilizedThis.sort((a, b) => {
@@ -62,34 +46,22 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: 'firstName',
+    id: 'sNo',
     numeric: false,
     disablePadding: true,
-    label: 'First Name',
+    label: 'S No',
   },
   {
-    id: 'lastName',
+    id: 'camName',
     numeric: true,
     disablePadding: false,
-    label: 'Last Name',
-  },
-  {
-    id: 'age',
-    numeric: true,
-    disablePadding: false,
-    label: 'Age',
-  },
-  {
-    id: 'role',
-    numeric: true,
-    disablePadding: false,
-    label: 'Role',
+    label: 'Camera Name',
   },
   {
     id: 'startDate',
     numeric: true,
     disablePadding: false,
-    label: 'Start Date',
+    label: 'Date',
   },
   {
     id: 'loginTime',
@@ -98,35 +70,23 @@ const headCells = [
     label: 'Login Time',
   },
   {
-    id: 'email',
-    numeric: true,
-    disablePadding: false,
-    label: 'Email',
-  },
-  {
-    id: 'mobileNumber',
-    numeric: true,
-    disablePadding: false,
-    label: 'Mobile Number',
-  },
-
-  {
-    id: 'edit',
-    numeric: false,
-    disablePadding: false,
-    label: 'Update info',
-  },
-  {
-    id: 'delete',
-    numeric: false,
-    disablePadding: false,
-    label: 'Delete',
-  },
-  {
     id: 'status',
     numeric: false,
     disablePadding: false,
     label: 'User Status',
+  },
+  {
+    id: 'hours',
+    numeric: false,
+    disablePadding: false,
+    label: 'Hours Info',
+  },
+ 
+  {
+    id: 'viewStatus',
+    numeric: false,
+    disablePadding: false,
+    label: 'View Status',
   },
 ];
 
@@ -143,7 +103,7 @@ function EnhancedTableHead(props) {
         {headCells.map((headCell) => (
           <TableCell
             key={headCell.id}
-            align={headCell.numeric ? 'right' : 'left'}
+            align={headCell.numeric ? 'right' : 'center'}
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
@@ -151,7 +111,7 @@ function EnhancedTableHead(props) {
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
-              sx={{fontSize:"19px",fontWeight:"600"}}
+              sx={{fontSize:"14px",fontWeight:"600",color:"#4839be"}}
             >
               {headCell.label}
               {orderBy === headCell.id ? (
@@ -220,6 +180,9 @@ export default function EnhancedTable(props) {
       ),
     [order, orderBy, page, rowsPerPage,rows],
   );
+const frameClipsViwer=()=>{
+props.redirectPage("/video-farmes-viewer");
+} 
 
   return (
     <Box sx={{ width: '100%' }}>
@@ -249,18 +212,14 @@ export default function EnhancedTable(props) {
                       scope="row"
                       padding="none"
                     >
-                      {row.firstName}
+                     {index+1}
                     </TableCell>
-                    <TableCell align="right">{row.lastName}</TableCell>
-                    <TableCell align="right">{row.age}</TableCell>
-                    <TableCell align="right">{row.role}</TableCell>
-                    <TableCell align="right">{row.startDate}</TableCell>
-                    <TableCell align="right">{row.loginTime}</TableCell>
-                    <TableCell align="right">{row.email}</TableCell>
-                    <TableCell align="right">{row.mobileNumber}</TableCell>
-                    <TableCell align="center">{<ModeEditTwoToneIcon sx={{color:"#5f4fad"}}/>}</TableCell>
-                    <TableCell align="center">{<DeleteTwoToneIcon sx={{color:"#fb1010"}}/>}</TableCell>   
-                    <TableCell align="center">{<ToggleSwitch/>}</TableCell>
+                    <TableCell align="center">{row.cameraName}</TableCell>
+                    <TableCell align="center">{row.recordDate}</TableCell>
+                    <TableCell align="center">{"Login Time"}</TableCell>
+                    <TableCell align="center">{<CheckCircleIcon sx={{color:"#00be09"}}/>}</TableCell>
+                    <TableCell align="center"><Select/></TableCell>
+                    <TableCell align="center">{<VisibilityIcon sx={{color:"#5f4fad"}} onClick={frameClipsViwer}/>}</TableCell>
                   </TableRow>
                 );
               })}
