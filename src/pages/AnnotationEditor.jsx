@@ -74,7 +74,7 @@ setImageUrl(imageSrc);
               bgcolor: "background.default",
             }}
           ><>
-            {contextData.state.framesData&& contextData.state.framesData.length>0&&<FrameViewer  key={"videoTool"}  frameHandler={frameDataHandler} Redirectpath={props.Redirectpath} imageData={contextData.state.framesData}/>}
+            {contextData.state.framesData&& contextData.state.framesData.length>0&&<FrameViewer chekc={"sdsdf"} key={"videoTool"}  frameHandler={frameDataHandler} Redirectpath={props.Redirectpath} imageData={contextData.state.framesData}/>}
             <div style={{ padding: "10px 22px" }}>
                 <ActionButton
                   buttonText={"Annotation Editor"}
