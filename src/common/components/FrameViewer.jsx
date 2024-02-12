@@ -1,9 +1,7 @@
-import * as React from 'react';
+import React,{useContext} from 'react';
 import { useTheme } from '@mui/material/styles';
 import Box from '@mui/material/Box';
 import MobileStepper from '@mui/material/MobileStepper';
-import Paper from '@mui/material/Paper';
-import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
@@ -34,49 +32,43 @@ const images = [
       'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
   },
 ];
-
-export default function FrameViewer() {
+export default function FrameViewer(props) {
   const theme = useTheme();
   const [activeStep, setActiveStep] = React.useState(0);
-  const maxSteps = images.length;
+  const maxSteps = props.imageData?props.imageData.length:0;
 
   const handleNext = () => {
+    props.frameHandler(activeStep+1)
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
   const handleBack = () => {
+    props.frameHandler(activeStep-1)
     setActiveStep((prevActiveStep) => prevActiveStep - 1);
   };
 
   const handleStepChange = (step) => {
     setActiveStep(step);
   };
-
+ 
   return (
     <Box>
-      <Paper
-        sx={{
-          alignItems: 'center',
-          padding:"16px",
-          bgcolor: 'background.default',
-        }}
-      >        
       <AutoPlaySwipeableViews
         axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
         index={activeStep}
         onChangeIndex={handleStepChange}
         enableMouseEvents
       >
-        {images.map((step, index) => (
-          <div key={step.label} style={{textAlign:"center"}}>
+        {props.imageData.map((step, index) => (
+          <div style={{textAlign:"center"}}>
             {Math.abs(activeStep - index) <= 2 ? (
               <Box
                 component="img"
                 sx={{
                   width: '95%',
                 }}
-                src={step.imgPath}
-                alt={step.label}
+                src={step.imageFrame}
+                alt={`Frame${index}`}
               />
             ) : null}
           </div>
@@ -111,7 +103,8 @@ export default function FrameViewer() {
           </Button>
         }
       />
-      </Paper>
+     
+    
     </Box>
   );
 }
