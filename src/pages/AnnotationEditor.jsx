@@ -93,7 +93,7 @@ setImageUrl(imageSrc);
          cardContent={
             <div>
                  <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Grid item xs={12} sm={12} md={9} lg={9} xl={9}  style={{height:"600px",width:"700px",background:"aliceblue"}}>
+                <Grid item xs={12} sm={12} md={9} lg={9} xl={9}  style={{height:"600px",width:"700px",background:"aliceblue",fontSize:'16px'}}>
             <ReactPictureAnnotation
          annotationStyle={defaultShapeStyle}
           image={imageUrl?imageUrl:'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60'}
