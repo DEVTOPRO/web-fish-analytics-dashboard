@@ -69,7 +69,7 @@ export default function VideoCollection(props) {
           canvas.height = video.videoHeight;
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           const frame = canvas.toDataURL("image/png");
-          let frameObject = { imageFrame: frame };
+          let frameObject = { imageFrame: frame,width:canvas.width,height:canvas.height };
           setFrames((frames) => [...frames, frameObject]);
           video.currentTime += 0.1;
           count++;

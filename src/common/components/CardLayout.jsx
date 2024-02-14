@@ -17,7 +17,7 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function CardLayout (props) {
-  const classes = useStyles()
+  const classes = useStyles();
 
   return (
     <div
