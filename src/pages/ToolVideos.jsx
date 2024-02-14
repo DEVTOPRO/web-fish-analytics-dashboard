@@ -48,6 +48,7 @@ export default function VideoCollection(props) {
   const [frames, setFrames] = useState([]);
   const [imageData, setImageDate] = useState(null);
   const [isFrameView, setIsFrameView] = useState(false);
+  const [videoTime,setVideoTime]=useState(null);
   let sample = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   const randomColor = () => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -56,6 +57,7 @@ export default function VideoCollection(props) {
   const extractImages = () => {
     const video = videoRef.current;
     const initialTime = video.currentTime;
+    
     const endTime = initialTime + 1;
     if (videoRef.current) {
       let count = 0;
@@ -78,8 +80,14 @@ export default function VideoCollection(props) {
     }
   };
   const videoHandler = (key) => {
-    console.log("ref data");
-    key == "play" ? setIsFrameView(false) : setIsFrameView(true);
+    const video = videoRef.current;
+    if(key == "play"){
+      setIsFrameView(false);
+      video.currentTime = videoTime;
+    } else{
+      setIsFrameView(true);
+      setVideoTime(video.currentTime);
+    }
   };
   const imageAnnotator = () => {
     contextData.dispatch({ type: "framesData", value: [...frames] });

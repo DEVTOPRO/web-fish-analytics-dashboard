@@ -177,7 +177,7 @@ export default function AnnotationEditor(props) {
                   lg={9}
                   xl={9}
                   style={{
-                    height: "600px",
+                    height: "900px",
                     width: "800px",
                     background: "aliceblue",
                     fontSize: "16px",
@@ -195,8 +195,8 @@ export default function AnnotationEditor(props) {
                     onSelect={onSelect}
                     onChange={onChange}
                     defaultAnnotationSize={1}
-                    width={700}
-                    height={700}
+                    width={900}
+                    height={900}
                     ref={canvasRef}
                   />
                 </Grid>
@@ -256,12 +256,13 @@ export default function AnnotationEditor(props) {
                   annotateInfo={annotateInfo}
                 />
               </div>
+             
             </div>
           }
           modalTitle="Preview"
           handleClose={handleModalClose}
           open={model}
-          disableWidth={true}
+          disableWidth={false}
         />
       </div>
     </>

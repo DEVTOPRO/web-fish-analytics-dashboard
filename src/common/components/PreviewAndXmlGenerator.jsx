@@ -1,15 +1,35 @@
-
 import React, { useRef, useState,useEffect } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import Title from './Title';
 import ActionButton from './Button';
+import { makeStyles } from '@mui/styles'
+import { Co2Sharp } from '@mui/icons-material';
+
+const useStyles = makeStyles(theme => ({
+  boundingBox:{
+    position: "absolute",
+    border: "2px solid red", /* Set border color and thickness */
+    boxSizing: "border-box",
+  },
+  frameContainer: {
+    position: "relative",
+    display: "inline-block",
+    marginRight: "10px" /* Adjust spacing between frames */
+  },
+  frame: {
+    display: "block",
+    width:"1280",
+    height: "720",
+  }
+}))
 
 export default function VideoToFrames (props){
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const classes = useStyles();
   const [frames, setFrames] = useState([]);
-  const [annotations, setAnnotations] = useState(Array.from({ length: 10 }, () => ''));
+  const [annotationStyle, setAnnotationStyle] = useState({ left: '826px', top: '339px', width: '382px', height: '365px' });
 
   // const drawRectangle = (xi,yi,widthf,heightf) => {
   //  let x=xi?xi:120;
@@ -24,11 +44,7 @@ export default function VideoToFrames (props){
   //   console.log("use effect");
   // };
 
-  // useEffect(() => {
-  //   props.annotateInfo&&props.annotateInfo.coordiants.length>0&&props.annotateInfo.coordiants.map((frameInfo)=>{
-  //     drawRectangle(frameInfo.xMin,frameInfo.yMin,frameInfo.strokeWidth,frameInfo.strokeHeight);
-  //   })
-  // }, [props.annotateInfo]);
+
 
 const subXmlGenrator=(subAnnainfo)=>{
 
@@ -77,19 +93,13 @@ const createZip = () => {
       }).catch(error => console.error('Error creating ZIP file:', error));
   };
   let sampleImg="https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
+  console.log(props.annotateInfo,"props.annotateInfo");
   return (
     <div>
-      <div>
-      <canvas
-    ref={canvasRef}
-    style={{
-      width:"100%",
-      height: "100%",
-      backgroundSize:"100% 100%",
-      backgroundImage:props.imageData ?`url(${props.imageData.imageFrame})`:`url(${sampleImg})`,
-    }}
-  />
-      </div>
+      <div className={classes.frameContainer}>
+           <img src={props.imageData?props.imageData.imageFrame:sampleImg} className={classes.frame}/>
+    {props.annotateInfo.coordiants.length>0&&props.annotateInfo.coordiants.map((frameInfo)=>(<div className={classes.boundingBox} style={{ left: `${frameInfo.xMin}px`, top: `${frameInfo.yMin}px`, width: `${frameInfo.strokeWidth}px`, height: `${frameInfo.strokeHeight}px` }}></div> ))}
+      </div>  
       <ActionButton
                     buttonText={"Genrato XMl"}
                     handleSubmit={createZip}
