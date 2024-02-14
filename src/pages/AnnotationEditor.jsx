@@ -162,10 +162,10 @@ export default function AnnotationEditor(props) {
           </>
         </Paper>
       </div>
-      <div>
+      <div style={{margin:"20px"}}>
         <CardLayout
           boxShadow={"inset 0px 0px 10px #00000029"}
-          margin={"20px"}
+        
           cardContent={
             <div>
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -235,9 +235,7 @@ export default function AnnotationEditor(props) {
                   <ActionButton
                     buttonText={"Genrato XMl"}
                     handleSubmit={handleSubmit(getImage)}
-                    backgroundImage={
-                      "linear-gradient(45deg, #eee4f8, transparent)"
-                    }
+                    backgroundColor="#8c7eff"
                     borderRadius={"10px"}
                   />
                 </Grid>

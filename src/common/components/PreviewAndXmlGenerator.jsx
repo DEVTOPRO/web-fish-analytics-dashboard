@@ -3,7 +3,7 @@ import React, { useRef, useState,useEffect } from 'react';
 import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import Title from './Title';
-import { Box } from '@mui/material';
+import ActionButton from './Button';
 
 export default function VideoToFrames (props){
   const videoRef = useRef(null);
@@ -11,24 +11,24 @@ export default function VideoToFrames (props){
   const [frames, setFrames] = useState([]);
   const [annotations, setAnnotations] = useState(Array.from({ length: 10 }, () => ''));
 
-  const drawRectangle = (xi,yi,widthf,heightf) => {
-   let x=xi?xi:120;
-   let y=yi?yi:140;
-   let width=widthf?widthf:130;
-   let  height=heightf?heightf:200;
-    console.log(x,y,width,height,"adfadf");
-    const context = canvasRef.current.getContext("2d");
-    context.strokeStyle = "red";
-    context.lineWidth = 1;
-    context.strokeRect(x, y, width, height);
-    console.log("use effect");
-  };
+  // const drawRectangle = (xi,yi,widthf,heightf) => {
+  //  let x=xi?xi:120;
+  //  let y=yi?yi:140;
+  //  let width=widthf?widthf:130;
+  //  let  height=heightf?heightf:200;
+  //   console.log(x,y,width,height,"adfadf");
+  //   const context = canvasRef.current.getContext("2d");
+  //   context.strokeStyle = "red";
+  //   context.lineWidth = 1;
+  //   context.strokeRect(x, y, width, height);
+  //   console.log("use effect");
+  // };
 
-  useEffect(() => {
-    props.annotateInfo&&props.annotateInfo.length>0&&props.annotateInfo.map((frameInfo)=>{
-      drawRectangle(frameInfo.xMin,frameInfo.yMin,frameInfo.strokeWidth,frameInfo.strokeHeight);
-    })
-  }, [props.annotateInfo]);
+  // useEffect(() => {
+  //   props.annotateInfo&&props.annotateInfo.coordiants.length>0&&props.annotateInfo.coordiants.map((frameInfo)=>{
+  //     drawRectangle(frameInfo.xMin,frameInfo.yMin,frameInfo.strokeWidth,frameInfo.strokeHeight);
+  //   })
+  // }, [props.annotateInfo]);
 
 const subXmlGenrator=(subAnnainfo)=>{
 
@@ -74,8 +74,7 @@ const createZip = () => {
     zip.generateAsync({ type: 'blob' })
       .then(content => {
         saveAs(content, 'frames_and_annotations.zip');
-      })
-      .catch(error => console.error('Error creating ZIP file:', error));
+      }).catch(error => console.error('Error creating ZIP file:', error));
   };
   let sampleImg="https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
   return (
@@ -91,7 +90,12 @@ const createZip = () => {
     }}
   />
       </div>
-      <button onClick={createZip}>Generate ZIP</button>
+      <ActionButton
+                    buttonText={"Genrato XMl"}
+                    handleSubmit={createZip}
+                    backgroundColor="#8c7eff"
+                    borderRadius={"10px"}
+                  />
     </div>
   );
 };
