@@ -177,10 +177,9 @@ export default function AnnotationEditor(props) {
                   lg={9}
                   xl={9}
                   style={{
-                    height: "900px",
-                    width: "800px",
+                    height: "600px",
+                    width: "600px",
                     background: "aliceblue",
-                    fontSize: "16px",
                   }}
                   ref={imageRef}
                 >
@@ -191,11 +190,11 @@ export default function AnnotationEditor(props) {
                         ? imageObj.imageFrame
                         : "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60"
                     }
-                    scrollSpeed={0}
+                    // scrollSpeed={1}
                     onSelect={onSelect}
                     onChange={onChange}
                     defaultAnnotationSize={1}
-                    width={900}
+                    width={600}
                     height={900}
                     ref={canvasRef}
                   />

@@ -7,10 +7,7 @@ import {BrowserRouter} from 'react-router-dom'
 import {ContextSetter} from './context/Context'
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
-  // <React.Stricte>
-  <BrowserRouter><ContextSetter><App /></ContextSetter></BrowserRouter>
-   
-  // </React.StrictMode>
+  <ContextSetter><BrowserRouter><App /></BrowserRouter></ContextSetter>
 );
 
 // If you want to start measuring performance in your app, pass a function

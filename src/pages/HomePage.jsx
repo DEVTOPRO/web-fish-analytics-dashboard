@@ -32,12 +32,12 @@ export default function HomePage(props){
    const [urlData,setUrlData]=useState(null);
  const [camerasList,setCameraList]=useState([]);
 const [recordInfo,setRecordInfo]=useState([
-  {cameraName:"Camera FlexA",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"Camera FlexB",recordDate:'2024-02-02',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"Camera FlexC",recordDate:'2024-02-03',hoursList:[{path:"dd",hour:1},{path:"dd",hour:4}]},
-  {cameraName:"Camera FlexD",recordDate:'2024-02-04',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"Camera FlexE",recordDate:'2024-02-05',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"Camera FlexF",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:9}]}]);
+  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-02',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-03',hoursList:[{path:"dd",hour:1},{path:"dd",hour:4}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-04',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-05',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:9}]}]);
  const {
   register,
   control,
@@ -57,19 +57,19 @@ if(response.data.status=="success"){
 }
   }).catch((e)=>alert("Please contact to Research Team"))
 },[])
-const dataHandle=(e)=>{
-axios.get("http://localhost:8090/recordingInfo/getRecordingClip?sourcePath=/recordings/2024-02-06/19/faux_camera1/testImgClip.mp4",{
-   responseType: 'arraybuffer'}).then((response)=>{
-        const binaryData = new Blob([response.data], { type: 'video/mp4' });
-        let convertedData = URL.createObjectURL(binaryData);
-        console.log(convertedData)
-        console.log(refItem)
-        if (refItem.current) {
-        setUrlData(true)
-        refItem.current.src = convertedData;
-        }
-});
-}
+// const dataHandle=(e)=>{
+// axios.get("http://localhost:8090/recordingInfo/getRecordingClip?sourcePath=/recordings/2024-02-06/19/faux_camera1/testImgClip.mp4",{
+//    responseType: 'arraybuffer'}).then((response)=>{
+//         const binaryData = new Blob([response.data], { type: 'video/mp4' });
+//         let convertedData = URL.createObjectURL(binaryData);
+//         console.log(convertedData)
+//         console.log(refItem)
+//         if (refItem.current) {
+//         setUrlData(true)
+//         refItem.current.src = convertedData;
+//         }
+// });
+// }
 const getVidoeInfo=(data)=>{
   console.log("Data Loading",data);
   service.get(`${recordingInfo}cameraName=${data.cameraName}`).then((response)=>{
@@ -140,6 +140,7 @@ const RedirectHandler=(path)=>{
 <CommonTable
 redirectPage={RedirectHandler}
   data={recordInfo}
+  camerasList={camerasList}
   
   />
           </div>

@@ -15,6 +15,7 @@ import { visuallyHidden } from '@mui/utils';
 import Select from "./NewSelect";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import Context from '../../context/Context';
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -145,7 +146,7 @@ export default function EnhancedTable(props) {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+const context=React.useContext(Context);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -162,8 +163,8 @@ export default function EnhancedTable(props) {
     setPage(0);
   };
 
-  const handleChangeDense = (event) => {
-    setDense(event.target.checked);
+  const selectHandler = (event) => {
+setSelected(event.target.value);
   };
 
 
@@ -180,6 +181,7 @@ export default function EnhancedTable(props) {
     [order, orderBy, page, rowsPerPage,rows],
   );
 const frameClipsViwer=()=>{
+  context.dispatch({ type: "path", value:selected });
 props.redirectPage("/video-farmes-viewer");
 } 
 
@@ -213,13 +215,14 @@ props.redirectPage("/video-farmes-viewer");
                     >
                      {index+1}
                     </TableCell>
-                    <TableCell align="center">{row.cameraName}</TableCell>
+                    <TableCell align="center">{props.camerasList&& props.camerasList.find((camInfo)=>camInfo.value==row.cameraName).name }</TableCell>
                     <TableCell align="center">{row.recordDate}</TableCell>
                     <TableCell align="center">{"Login Time"}</TableCell>
                     <TableCell align="center">{<CheckCircleIcon sx={{color:"#00be09"}}/>}</TableCell>
                     <TableCell align="center"><Select
                       displayValue="hour"
                       keyValue="path"
+                      handleChange={selectHandler}
                       listItems={row.hoursList}
                     /></TableCell>
                     <TableCell align="center">{<VisibilityIcon sx={{color:"#5f4fad"}} onClick={frameClipsViwer}/>}</TableCell>
