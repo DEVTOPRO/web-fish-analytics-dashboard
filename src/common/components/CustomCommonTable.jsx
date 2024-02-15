@@ -138,7 +138,6 @@ EnhancedTableHead.propTypes = {
 
 
 export default function EnhancedTable(props) {
-  console.log(props)
   let rows=props.data
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
@@ -218,7 +217,11 @@ props.redirectPage("/video-farmes-viewer");
                     <TableCell align="center">{row.recordDate}</TableCell>
                     <TableCell align="center">{"Login Time"}</TableCell>
                     <TableCell align="center">{<CheckCircleIcon sx={{color:"#00be09"}}/>}</TableCell>
-                    <TableCell align="center"><Select/></TableCell>
+                    <TableCell align="center"><Select
+                      displayValue="hour"
+                      keyValue="path"
+                      listItems={row.hoursList}
+                    /></TableCell>
                     <TableCell align="center">{<VisibilityIcon sx={{color:"#5f4fad"}} onClick={frameClipsViwer}/>}</TableCell>
                   </TableRow>
                 );

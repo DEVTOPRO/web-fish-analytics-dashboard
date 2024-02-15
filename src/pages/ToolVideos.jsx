@@ -44,7 +44,6 @@ export default function VideoCollection(props) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const contextData = useContext(Context);
-
   const [frames, setFrames] = useState([]);
   const [imageData, setImageDate] = useState(null);
   const [isFrameView, setIsFrameView] = useState(false);

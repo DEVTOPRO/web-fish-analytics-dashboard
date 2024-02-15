@@ -101,7 +101,7 @@ export default function CustomSelect(props) {
         disabled={props.disabled}
         onChange={props.handleChange}
         value={props.value}
-        {...props.register}
+        {...props.inputRef}
       >
         <option value="">Select
         </option>
