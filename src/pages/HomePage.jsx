@@ -56,20 +56,7 @@ if(response.data.status=="success"){
   alert("Technical error")
 }
   }).catch((e)=>alert("Please contact to Research Team"))
-},[])
-// const dataHandle=(e)=>{
-// axios.get("http://localhost:8090/recordingInfo/getRecordingClip?sourcePath=/recordings/2024-02-06/19/faux_camera1/testImgClip.mp4",{
-//    responseType: 'arraybuffer'}).then((response)=>{
-//         const binaryData = new Blob([response.data], { type: 'video/mp4' });
-//         let convertedData = URL.createObjectURL(binaryData);
-//         console.log(convertedData)
-//         console.log(refItem)
-//         if (refItem.current) {
-//         setUrlData(true)
-//         refItem.current.src = convertedData;
-//         }
-// });
-// }
+},[]);
 const getVidoeInfo=(data)=>{
   console.log("Data Loading",data);
   service.get(`${recordingInfo}cameraName=${data.cameraName}`).then((response)=>{
@@ -136,24 +123,14 @@ const RedirectHandler=(path)=>{
             </div>
           }
         />
-        <div className={classes.tableRoot}>
+  <div className={classes.tableRoot}>
 <CommonTable
 redirectPage={RedirectHandler}
   data={recordInfo}
   camerasList={camerasList}
-  
   />
           </div>
       </Box>
     );
 
 }
-
-
-
-{/* <button onClick={dataHandle}>Specific Vidoe </button>
-<div>
-  <video ref={refItem} controls width="640" height="360">
-    Your browser does not support the video tag.
-  </video>
-</div> */}

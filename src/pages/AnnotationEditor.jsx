@@ -70,7 +70,7 @@ export default function AnnotationEditor(props) {
   const [imageData, setImageData] = useState(0);
   const [imageObj, setImageObj] = useState(null);
   const [annotateInfo, setAnnotateInfo] = useState();
-  const [model, setModel] = useState();
+  const [model, setModel] = useState(false);
 
 
   const imageAnnotator = () => {
@@ -122,6 +122,9 @@ export default function AnnotationEditor(props) {
   const backHandler = () => {
     props.Redirectpath("/video-farmes-viewer");
   };
+  const deleteHandler=(data)=>{
+    console.log("Dad")
+  }
   return (
     <>
       <div>
@@ -162,10 +165,9 @@ export default function AnnotationEditor(props) {
           </>
         </Paper>
       </div>
-      <div style={{margin:"20px"}}>
+     <div style={{margin:"20px"}}>
         <CardLayout
           boxShadow={"inset 0px 0px 10px #00000029"}
-        
           cardContent={
             <div>
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
@@ -190,12 +192,13 @@ export default function AnnotationEditor(props) {
                         ? imageObj.imageFrame
                         : "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60"
                     }
-                    // scrollSpeed={1}
+                    scrollSpeed={0}
                     onSelect={onSelect}
                     onChange={onChange}
+                    onDelete={<div>sadas</div>}
                     defaultAnnotationSize={1}
                     width={600}
-                    height={900}
+                    height={700}
                     ref={canvasRef}
                   />
                 </Grid>
@@ -242,7 +245,7 @@ export default function AnnotationEditor(props) {
             </div>
           }
         />
-      </div>
+              </div>
 
       <div>
         <CustomModel

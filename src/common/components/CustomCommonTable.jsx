@@ -215,7 +215,7 @@ props.redirectPage("/video-farmes-viewer");
                     >
                      {index+1}
                     </TableCell>
-                    <TableCell align="center">{props.camerasList&& props.camerasList.find((camInfo)=>camInfo.value==row.cameraName).name }</TableCell>
+                    <TableCell align="center">{props.camerasList&&props.camerasList.length>0&& props.camerasList.find((camInfo)=>camInfo.value==row.cameraName).name||"Camera A"}</TableCell>
                     <TableCell align="center">{row.recordDate}</TableCell>
                     <TableCell align="center">{"Login Time"}</TableCell>
                     <TableCell align="center">{<CheckCircleIcon sx={{color:"#00be09"}}/>}</TableCell>
