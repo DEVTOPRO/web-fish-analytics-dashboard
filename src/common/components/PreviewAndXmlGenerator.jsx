@@ -3,7 +3,9 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import Title from './Title';
 import ActionButton from './Button';
+import { useScreenshot } from "use-react-screenshot";
 import { makeStyles } from '@mui/styles'
+import { SecurityUpdateWarning } from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
   boundingBox:{
@@ -24,16 +26,15 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function VideoToFrames (props){
-  const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const [image, takeScreenShot] = useScreenshot();
+  const [data,setData]=useState("sdfad");
   const classes = useStyles();
   let sampleImg="https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
 
   useEffect(()=>{  
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
-
-    // Draw the background image
     const backgroundImage = new Image();
     backgroundImage.src = props.imageData?props.imageData.imageFrame:sampleImg;
     backgroundImage.onload = () => {
@@ -47,7 +48,6 @@ export default function VideoToFrames (props){
       context.stroke();
     });
     }
- console.log("props.imageData",props.imageData)
   },[])
 
 const subXmlGenrator=(subAnnainfo)=>{
@@ -64,6 +64,14 @@ const subXmlGenrator=(subAnnainfo)=>{
      \t\t\t<ymax>${subAnnainfo.yMax}</ymax> 
      \t\t</bndbox>
     \t</object>`
+}
+const getImage = () => {
+  console.log("adfasf",canvasRef.current)
+  takeScreenShot(canvasRef.current);
+
+  setTimeout(()=>{
+    console.log(image)
+  },5000)
 }
 const createZip = () => {
     const zip = new JSZip();
@@ -96,7 +104,6 @@ const createZip = () => {
         saveAs(content, 'frames_and_annotations.zip');
       }).catch(error => console.error('Error creating ZIP file:', error));
   };
-   console.log(props.annotateInfo,"props.annotateInfo");
   return (
     <div>
       <div style={{ padding: "2%" }}>

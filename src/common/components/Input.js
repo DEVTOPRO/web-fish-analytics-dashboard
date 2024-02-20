@@ -19,15 +19,15 @@ const useStylesCustom = makeStyles(theme => ({
     backgroundColor: "#ffff",
     border: '1px solid #ced4da',
     fontSize: 16,
-    padding: '10px',
-    margin: '5px',
+    padding: '8px',
+    margin: '0px 4px',
     transition: 'box-shadow linear 1, border 500ms ease-out;',  
     '&:hover': {
       backgroundColor: '#fff',
     },
     '&:focus': {
-      boxShadow: `${("#1976d2", 0.25)}0.25 0 0 0 0.2rem`,
-      borderColor: "#1976d2",
+      // boxShadow: `${("#1976d2", 0.25)}0.25 0 0 0 0.2rem`,
+      // borderColor: "#1976d2",
       outline: 0,
     },
     'label + &': {
@@ -91,7 +91,6 @@ function Input(props) {
   return (
     <div className={classes.root}>
       <FormControl className={classes.margin}>
-      
         <input
           ref={props.inputRef}
           className={

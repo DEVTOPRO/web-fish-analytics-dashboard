@@ -58,41 +58,11 @@ export default function DailyAnalysis(props){
 window.removeEventListener("resize", onResize);
   }, []);
 const deleteHandler=(deleFun)=>{
-  console.log(deleFun);
+ deleFun();
 }
     return (
         <div >
           <div >check</div>
-              <ReactPictureAnnotation
-             {...props}
-             debugger
-                    image={"https://source.unsplash.com/random/1000x1000"}
-                    scrollSpeed={0}
-                    onSelect={onSelect}
-                    onChange={onChange}
-                    defaultAnnotationSize={1}
-                    width={pageSize.width}
-                    height={pageSize.height}
-                    ref={canvasRef}
-                    inputElement={(value, onChange, onDelete) =>
-                     {
-                      return(
-                        <div>
-                           <input
-        placeholder={"Hello world"}
-        name={"input"}
-        onChange={(e) => {
-          console.log(e);
-        }}
-      />
-                        <button type={"button"} onClick={()=>deleteHandler(value)}>
-        OK
-      </button>
-                          </div>
-                      )
-                     }
-                    }
-                  />
         </div>
     )
 }

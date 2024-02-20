@@ -11,7 +11,8 @@ import MenuItem from '@mui/material/MenuItem';
 import { makeStyles } from '@mui/styles';
 import Context from '../../context/Context';
 import { useForm } from 'react-hook-form';
-import FishIcon from "../../assets/fishjum.svg"
+// import FishIcon from "../../assets/fishjum.svg"
+import FishIcon from "../../assets/Fishfinalvector.svg"
 import PersonPinCircleTwoToneIcon from '@mui/icons-material/PersonPinCircleTwoTone';
 const useStyles = makeStyles((theme) => ({
   loginIcon: {
@@ -146,7 +147,7 @@ const ResponsiveAppBar = (props) => {
             variant="h6"
             component="a"
             onClick={() => handleCloseNavMenu('/')}          >
-            <img src={FishIcon} width={"45%"}/>
+           <img src={FishIcon} style={{width:'19%'}}/>
           </Typography>
           <Box
             sx={{

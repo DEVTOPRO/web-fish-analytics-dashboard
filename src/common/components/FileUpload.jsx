@@ -1,6 +1,7 @@
-import React from 'react';
+  import React from 'react';
 import { makeStyles } from '@mui/styles';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const useStyles = makeStyles((theme) => ({
   attachBtnStyles: {
@@ -26,21 +27,10 @@ export default function DocumentUpload(props) {
   const classes = useStyles();
   return (
     <div>
-      <fieldset
-        style={{
-          borderRadius: props.borderRadius? props.borderRadius :'4px',
-          borderColor: '#0000004a',
-          border: '1px solid #0000004a',
-          width: props.width?props.width:'250px',
-          marginLeft: props.marginLeft,
-          height: props.height?props.height:'32px'
-        }}
-      >
-        <legend style={{color:props.color?props.color:'', fontSize:props.font?props.font:''}} className={classes.labelStyle}>{props.legendName}</legend>
         <div
           style={{
             display: 'flex',
-            justifyContent: 'space-between',
+            justifyContent: 'center',
             color: 'rgba(0, 0, 0, 0.6)',
             fontFamily: 'Roboto,Helvetica,Arial,sans-serifmarginTop:12px',
           }}
@@ -64,12 +54,11 @@ export default function DocumentUpload(props) {
               <div variant="contained">
                 <span>{props.labelContent}</span>
 
-                <AttachFileIcon />
+                <CloudUploadIcon style={{fontSize:"4.2rem",color:"#5a50ab"}} />
               </div>
             </label>
           </div>
         </div>
-      </fieldset>
     </div>
   );
 }

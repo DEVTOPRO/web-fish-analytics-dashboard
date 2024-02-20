@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import CardLayout from "../common/components/CardLayout";
 import SampleImage from "../assets/fishjum.svg";
 import ItemCarousel from "../common/components/Carousel";
-import BackgroundPoster from "../assets/BackgroudPoster.png";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
 import { makeStyles } from "@mui/styles";
 import testVideo from "../assets/testclip.MP4";
@@ -12,27 +11,9 @@ import Context from "../context/Context";
 import Paper from "@mui/material/Paper";
 import service from "../api/apiSection/service";
 import {recordSourcePath,recordSource} from "../api/apiSection/apiUrlConstent";
-import { useAsyncError } from "react-router-dom";
-export const defaultShapeStyle = {
-  /** text area **/
-  padding: 5, // text padding
-  fontSize: 12, // text font size
-  fontColor: "#212529", // text font color
-  fontBackground: "#f8f9fa", // text background color
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif",
 
-  /** stroke style **/
-  lineWidth: 2, // stroke width
-  shapeBackground: "hsla(210, 16%, 93%, 0.2)", // background color in the middle of the marker
-  shapeStrokeStyle: "#f8f9fa", // shape stroke color
-  shadowBlur: 10, // stroke shadow blur
-  shapeShadowStyle: "hsla(210, 9%, 31%, 0.35)", // shape shadow color
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
-  /** transformer style **/
-  transformerBackground: "#5c7cfa",
-  transformerSize: 10,
-};
 const useStyles = makeStyles((theme) => ({
   videoCards: {
     color: "#4839be",
@@ -40,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
   mainRoot: {
     padding: "20px 0px",
   },
+  backButton: {
+    padding: '10px',
+    transition: "transform .2s",
+    "&:hover": {
+      transform: "scale(1.0)"
+    },
+  }
 }));
 export default function VideoCollection(props) {
   const classes = useStyles();
@@ -67,10 +55,9 @@ alert("Technical Error")
   const extractImages = () => {
     const video = videoRef.current;
     const initialTime = video.currentTime;
-    
+    setFrames([])
     const endTime = initialTime + 1;
     if (videoRef.current) {
-      let count = 0;
       const interval = setInterval(() => {
         if (endTime <= video.currentTime) {
           clearInterval(interval);
@@ -84,7 +71,6 @@ alert("Technical Error")
           let frameObject = { imageFrame: frame,width:canvas.width,height:canvas.height };
           setFrames((frames) => [...frames, frameObject]);
           video.currentTime += 0.1;
-          count++;
         }
       }, 42);
     }
@@ -117,7 +103,9 @@ alert("Technical Error")
       }).catch((e)=>alert("Please contact to research team"))
  
   }
-
+const backHandler=()=>{
+ props.Redirectpath("/");
+}
   const subContent = () => {
     return videoSourcePath.map((data) => (
       <div style={{ padding: "3%" }} onClick={()=>recordLoader(data.url)}>
@@ -155,7 +143,15 @@ alert("Technical Error")
 
   return (
     <div>
-   
+    <div className={classes.backButton}>
+          <ActionButton
+            buttonText={<><KeyboardArrowLeft /> {"Back to Home"}</>}
+            handleSubmit={backHandler}
+            backgroundImage={"#395d91d6"}
+            borderRadius={"10px"}
+            width={"fit-content"}
+          />
+        </div>
       <div>
         <ItemCarousel dataContent={subContent()} />
       </div>
@@ -171,7 +167,6 @@ alert("Technical Error")
                 controls
                 style={{ padding: "10px", borderRadius: "15px" }}
                 width="100%"
-              
                 onPause={() => videoHandler("pause")}
                 onPlay={() => videoHandler("play")}
               />

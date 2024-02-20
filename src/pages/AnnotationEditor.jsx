@@ -71,7 +71,9 @@ export default function AnnotationEditor(props) {
   const [imageObj, setImageObj] = useState(null);
   const [annotateInfo, setAnnotateInfo] = useState();
   const [model, setModel] = useState(false);
-
+  useEffect(()=>{
+console.log("dsd")
+  },[setModel])
 
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
@@ -122,9 +124,7 @@ export default function AnnotationEditor(props) {
   const backHandler = () => {
     props.Redirectpath("/video-farmes-viewer");
   };
-  const deleteHandler=(data)=>{
-    console.log("Dad")
-  }
+ 
   return (
     <>
       <div>
@@ -195,9 +195,8 @@ export default function AnnotationEditor(props) {
                     scrollSpeed={0}
                     onSelect={onSelect}
                     onChange={onChange}
-                    onDelete={<div>sadas</div>}
                     defaultAnnotationSize={1}
-                    width={600}
+                    width={800}
                     height={700}
                     ref={canvasRef}
                   />
