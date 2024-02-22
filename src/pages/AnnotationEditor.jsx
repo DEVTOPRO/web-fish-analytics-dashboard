@@ -9,18 +9,14 @@ import Input from "../common/components/Input";
 import Label from "../common/components/label";
 import CustomModel from "../common/components/modal";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-<<<<<<< HEAD
-import { useForm } from 'react-hook-form';
 import { useScreenshot } from "use-react-screenshot";
 import Context from "../context/Context";
 import PreviewAndXmlGenerator from "../common/components/PreviewAndXmlGenerator";
 
-=======
 import Select from "../common/components/Select";
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@mui/styles'
 import AlertMessage from "../common/components/AlertMessage";
->>>>>>> 0893553e6dc87ce3f8683f4163aafd5c4d57cbf8
 const useStyles = makeStyles(theme => ({
   backButton: {
     padding: '2% 10px 10px',
@@ -59,10 +55,6 @@ const AnnotationEditor = (props) => {
   const canvasRef = React.useRef(null);
   const imageRef = React.useRef(null);
   const contextData = React.useContext(Context);
-  const [annotateInfo, setAnnotateInfo] = React.useState();
-  const [model, setModel] = React.useState(false);
-  const [imageData, setImageData] = React.useState(0);
-  const [imageObj, setImageObj] = React.useState(null);
   const [annotations, setAnnotations] = React.useState([]);
   const {
     register,
