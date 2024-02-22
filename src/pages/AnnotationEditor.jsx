@@ -1,22 +1,29 @@
-import React, { useState } from "react";
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useContext,
+  useCallback,
+  useMemo,
+} from "react";
 import { ReactPictureAnnotation } from "react-picture-annotation";
-import { Box, Grid, Paper } from "@mui/material";
-import { makeStyles } from '@mui/styles';
+import Context from "../context/Context";
 import FrameViewer from "../common/components/FrameViewer";
 import ActionButton from "../common/components/Button";
+import { Box, Grid, Paper } from "@mui/material";
 import CardLayout from "../common/components/CardLayout";
 import Input from "../common/components/Input";
+import PreviewAndXmlGenerator from "../common/components/PreviewAndXmlGenerator";
 import Label from "../common/components/label";
 import CustomModel from "../common/components/modal";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-import { useScreenshot } from "use-react-screenshot";
-import Context from "../context/Context";
-import PreviewAndXmlGenerator from "../common/components/PreviewAndXmlGenerator";
 
-import Select from "../common/components/Select";
 import { useForm } from 'react-hook-form';
-import { makeStyles } from '@mui/styles'
+import Select from "../common/components/Select";
+import { makeStyles } from '@mui/styles';
 import AlertMessage from "../common/components/AlertMessage";
+import { useScreenshot } from "use-react-screenshot";
+
 const useStyles = makeStyles(theme => ({
   backButton: {
     padding: '2% 10px 10px',
@@ -32,56 +39,65 @@ const useStyles = makeStyles(theme => ({
     height: "100vh",
     background: "#f0f0f0",
   },
-}));
-
-const defaultShapeStyle = {
-  padding: 5,
-  fontSize: 12,
-  fontColor: "#212529",
-  fontBackground: "#f8f9fa",
+})) 
+export const defaultShapeStyle = {
+  /** text area **/
+  padding: 5, // text padding
+  fontSize: 12, // text font size
+  fontColor: "#212529", // text font color
+  fontBackground: "#f8f9fa", // text background color
   fontFamily:
     "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif",
-  lineWidth: 2,
-  shapeBackground: "hsla(210, 16%, 93%, 0.2)",
-  shapeStrokeStyle: "#f8f9fa",
-  shadowBlur: 10,
-  shapeShadowStyle: "hsla(210, 9%, 31%, 0.35)",
+
+  /** stroke style **/
+  lineWidth: 2, // stroke width
+  shapeBackground: "hsla(210, 16%, 93%, 0.2)", // background color in the middle of the marker
+  shapeStrokeStyle: "#f8f9fa", // shape stroke color
+  shadowBlur: 10, // stroke shadow blur
+  shapeShadowStyle: "hsla(210, 9%, 31%, 0.35)", // shape shadow color
+
+  /** transformer style **/
   transformerBackground: "#5c7cfa",
   transformerSize: 10,
 };
-
-const AnnotationEditor = (props) => {
-  const classes = useStyles();
-  const canvasRef = React.useRef(null);
-  const imageRef = React.useRef(null);
-  const contextData = React.useContext(Context);
+export default function AnnotationEditor(props) {
+  const classes = useStyles()
+  const canvasRef = useRef(null);
+  const imageRef = useRef(null);
+  const contextData = useContext(Context);
+  const [image, takeScreenShot] = useScreenshot();
   const [annotations, setAnnotations] = React.useState([]);
   const {
     register,
+    control,
     handleSubmit,
+    watch,
+    reset,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm();
   const [imageData, setImageData] = useState(0);
-  const [imageObj, setImageObj] = useState(contextData.state.framesData&&contextData.state.framesData.length>0?contextData.state.framesData[0]:null);
+  const [imageObj, setImageObj] = useState(null);
   const [annotateInfo, setAnnotateInfo] = useState();
   const [model, setModel] = useState(false);
   const [fieldSize,setFieldSize]=useState(["1"]);
-const [errorMessage,setErrorMessage]=useState(null);
+  const [errorMessage,setErrorMessage]=useState(null);
+
+
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
     );
+    console.log(imageObj);
     setImageObj(imageObj);
   };
-
   const frameDataHandler = (imageIndex) => {
     setImageData(imageIndex);
   };
-
   const handleModalClose = () => {
     setModel(false);
   };
-
   const getImage = (data) => {
     let sampleObject = {};
     sampleObject.folderName = "my project";
@@ -91,18 +107,18 @@ const [errorMessage,setErrorMessage]=useState(null);
     sampleObject.height = imageObj.height;
     sampleObject.imageString = imageObj.imageFrame;
     sampleObject.depth = 3;
-    sampleObject.coordiants = annotations.map((annotateData) => {
-      let coordiants={};
-      coordiants.xMax = Math.round(annotateData.mark.x + annotateData.mark.width);
-      coordiants.yMax = Math.round(annotateData.mark.y + annotateData.mark.height);
-      coordiants.xMin = Math.round(annotateData.mark.x);
-      coordiants.yMin = Math.round(annotateData.mark.y);
-      coordiants.strokeWidth = Math.round(annotateData.mark.width);
-      coordiants.strokeHeight = Math.round(annotateData.mark.height);
-      coordiants.pose=data.pose;
-      coordiants.diffcult=data.difficult;
-      coordiants.truncated=data.truncated;
-      coordiants.annotateName = data.comment ? data.comment : "fish view";
+    sampleObject.coordiants = annotateInfo.map((annotateData) => {
+     let coordiants={};
+       coordiants.xMax = Math.round(annotateData.mark.x + annotateData.mark.width);
+       coordiants.yMax = Math.round(annotateData.mark.y + annotateData.mark.height);
+       coordiants.xMin = Math.round(annotateData.mark.x);
+       coordiants.yMin = Math.round(annotateData.mark.y);
+       coordiants.strokeWidth = Math.round(annotateData.mark.width);
+       coordiants.strokeHeight = Math.round(annotateData.mark.height);
+       coordiants.pose=data.pose;
+       coordiants.diffcult=data.difficult;
+       coordiants.truncated=data.truncated;
+       coordiants.annotateName = data.comment ? data.comment : "fish view";
       return  coordiants;
     });
     console.log("sampleObject", sampleObject);
@@ -127,7 +143,6 @@ const [errorMessage,setErrorMessage]=useState(null);
       setFieldSize(array)
     }
   };
-
   const backHandler = () => {
     props.Redirectpath("/video-farmes-viewer");
   };
@@ -135,6 +150,7 @@ const [errorMessage,setErrorMessage]=useState(null);
     props.Redirectpath("/video-farmes-viewer");
   };
   console.log("sdfdofh")
+  
   return (
     <>
       <div>
@@ -180,7 +196,7 @@ const [errorMessage,setErrorMessage]=useState(null);
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
-              {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
+ {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Grid
                   item
@@ -206,6 +222,7 @@ const [errorMessage,setErrorMessage]=useState(null);
                     scrollSpeed={0}
                     onSelect={onSelect}
                     onChange={onChange}
+                    onDelete={<div>sadas</div>}
                     defaultAnnotationSize={1}
                     width={800}
                     height={700}
@@ -218,10 +235,10 @@ const [errorMessage,setErrorMessage]=useState(null);
                 sx={{
                   width: '95%',
                 }} > {"Additional Information"}</Box>
-                {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{
+                    {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{
                   return(
                   <> */}
-                   <Label labelName={"Name of Fish*"} />
+                  <Label labelName={"Name of Fish*"} />
                   <Select
                     displayValue="name"
                     keyValue="value"
@@ -232,15 +249,16 @@ const [errorMessage,setErrorMessage]=useState(null);
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"
-                    inputRef={register(`pose`, {
+                    inputRef={register('pose', {
                       required: true,
                     })}
                     type="text"
                   />
+
                   <Label labelName={"Truncated *"} />
                   <Input
                     name="truncated"
-                    inputRef={register(`truncated`, {
+                    inputRef={register('truncated', {
                       required: true,
                     })}
                     type="text"
@@ -248,15 +266,14 @@ const [errorMessage,setErrorMessage]=useState(null);
                   <Label labelName={"Difficult *"} />
                   <Input
                     name="difficult"
-                    inputRef={register(`difficult`, {
+                    inputRef={register('difficult', {
                       required: true,
                     })}
                     type="text"
                   />
-                  {/* </>)})} */}
-
+  {/* </>)})} */}
                   <ActionButton
-                    buttonText={"Submit XML"}
+                    buttonText={"Submit XMl"}
                     handleSubmit={handleSubmit(getImage)}
                     backgroundColor="#8c7eff"
                     borderRadius={"10px"}
@@ -279,6 +296,7 @@ const [errorMessage,setErrorMessage]=useState(null);
                   annotateInfo={annotateInfo}
                 />
               </div>
+             
             </div>
           }
           modalTitle="Preview"
@@ -290,5 +308,3 @@ const [errorMessage,setErrorMessage]=useState(null);
     </>
   );
 }
-
-export default AnnotationEditor;
