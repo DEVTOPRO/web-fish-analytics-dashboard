@@ -136,7 +136,6 @@ const [errorMessage,setErrorMessage]=useState(null);
   window.onload = (event) => {
     props.Redirectpath("/video-farmes-viewer");
   };
-  console.log("test file" )
   return (
     <>
       <div>
