@@ -22,10 +22,10 @@ const useStyles = makeStyles((theme) => ({
     padding: "20px 0px",
   },
   backButton: {
-    padding: '10px',
-    transition: "transform .2s",
+    padding: '2% 10px 10px',
+    transition: "transform .3s",
     "&:hover": {
-      transform: "scale(1.0)"
+      transform: "scale(0.95)",
     },
   }
 }));

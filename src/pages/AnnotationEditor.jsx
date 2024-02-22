@@ -18,16 +18,16 @@ import { useScreenshot } from "use-react-screenshot";
 import Label from "../common/components/label";
 import CustomModel from "../common/components/modal";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-
+import Select from "../common/components/Select";
 import { useForm } from 'react-hook-form';
 import { makeStyles } from '@mui/styles'
-
+import AlertMessage from "../common/components/AlertMessage";
 const useStyles = makeStyles(theme => ({
   backButton: {
-    padding: '10px',
-    transition: "transform .2s",
+    padding: '2% 10px 10px',
+    transition: "transform .3s",
     "&:hover": {
-      transform: "scale(1.0)"
+      transform: "scale(0.95)",
     },
   }
 })) 
@@ -68,18 +68,15 @@ export default function AnnotationEditor(props) {
     getValues,
   } = useForm();
   const [imageData, setImageData] = useState(0);
-  const [imageObj, setImageObj] = useState(null);
+  const [imageObj, setImageObj] = useState(contextData.state.framesData&&contextData.state.framesData.length>0?contextData.state.framesData[0]:null);
   const [annotateInfo, setAnnotateInfo] = useState();
   const [model, setModel] = useState(false);
-  useEffect(()=>{
-console.log("dsd")
-  },[setModel])
-
+  const [fieldSize,setFieldSize]=useState(["1"]);
+const [errorMessage,setErrorMessage]=useState(null);
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
     );
-    console.log(imageObj);
     setImageObj(imageObj);
   };
   const frameDataHandler = (imageIndex) => {
@@ -119,12 +116,26 @@ console.log("dsd")
   const onSelect = (selectedId) => console.log(selectedId);
   const onChange = (data) => {
     console.log("Latest value:", data);
-    setAnnotateInfo(data);
+    data&&data.length>0&&data.map((val)=>{
+      if(val&&val.mark.x>0&&val.mark.y>0&&val.mark.width>0){
+        setAnnotateInfo(data);
+        setErrorMessage(null)
+      }else{
+        setErrorMessage("Please Annontate the within image range");
+      }
+    })
+    if(data&&data.length>1){
+      let array = new Array(data.length).fill("1");
+      console.log("sdfsd",array)
+      setFieldSize(array)
+    }
   };
   const backHandler = () => {
     props.Redirectpath("/video-farmes-viewer");
   };
- 
+  window.onload = (event) => {
+    props.Redirectpath("/video-farmes-viewer");
+  };
   return (
     <>
       <div>
@@ -170,6 +181,7 @@ console.log("dsd")
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
+              {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Grid
                   item
@@ -207,10 +219,21 @@ console.log("dsd")
                 sx={{
                   width: '95%',
                 }} > {"Additional Information"}</Box>
+                {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{
+                  return(
+                  <> */}
+                   <Label labelName={"Name of Fish*"} />
+                  <Select
+                    displayValue="name"
+                    keyValue="value"
+                    listItems={[{name:"Salmana",value:'salmana'},{name:"White fish",value:'white fish'}]}
+                    inputRef={register(`fishType`, {
+                    })}
+                  />
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"
-                    inputRef={register('pose', {
+                    inputRef={register(`pose`, {
                       required: true,
                     })}
                     type="text"
@@ -219,7 +242,7 @@ console.log("dsd")
                   <Label labelName={"Truncated *"} />
                   <Input
                     name="truncated"
-                    inputRef={register('truncated', {
+                    inputRef={register(`truncated`, {
                       required: true,
                     })}
                     type="text"
@@ -227,14 +250,15 @@ console.log("dsd")
                   <Label labelName={"Difficult *"} />
                   <Input
                     name="difficult"
-                    inputRef={register('difficult', {
+                    inputRef={register(`difficult`, {
                       required: true,
                     })}
                     type="text"
                   />
+                  {/* </>)})} */}
 
                   <ActionButton
-                    buttonText={"Genrato XMl"}
+                    buttonText={"Submit XML"}
                     handleSubmit={handleSubmit(getImage)}
                     backgroundColor="#8c7eff"
                     borderRadius={"10px"}

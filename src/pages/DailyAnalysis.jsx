@@ -1,6 +1,7 @@
 import {useEffect, useRef, useState} from 'react';
-import { makeStyles } from '@mui/styles'
-import { ReactPictureAnnotation } from "react-picture-annotation";
+import { makeStyles } from '@mui/styles';
+import {filePost} from "../api/apiSection/apiUrlConstent";
+import service from "../api/apiSection/service";
 const useStyles = makeStyles(theme => ({
     canvasContainer2 :{
         height: "600px",
@@ -42,27 +43,24 @@ export const defaultShapeStyle = {
 export default function DailyAnalysis(props){
     const classes = useStyles();
     const canvasRef = useRef(null);
-    const onSelect = (selectedId) => console.log(selectedId);
-  const onChange = (data) => {
-    console.log("Latest value:", data);
-  };
-  const [pageSize, setPageSize] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight
-  });
-  const onResize = () => {
-    setPageSize({ width: window.innerWidth, height: window.innerHeight });
-  };
-
-  useEffect(() => {
-window.removeEventListener("resize", onResize);
-  }, []);
-const deleteHandler=(deleFun)=>{
- deleFun();
+    const [file,setFile]=useState(null);
+const fileDataHandler=(e)=>{
+console.log(e.target.files[0],"file info");
+let fordata = new FormData();
+fordata.append('files', e.target.files[0])
+let reqObj=[{
+  userId:"dafasf",
+  files:fordata
+}]
+service.create(filePost,reqObj, {
+ 
+}).then((respones)=>{
+ console.log(respones);
+}); 
 }
     return (
         <div >
-          <div >check</div>
+       {"Check ui"}
         </div>
     )
 }
