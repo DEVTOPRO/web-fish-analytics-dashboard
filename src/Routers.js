@@ -40,9 +40,15 @@ export default function Routers(Redirectpath, getConstValue) {
       },       
         { path: "/signup", element: <div>hello user</div>},
         { path: "/errorPage", element: <ErrorPage Redirectpath={Redirectpath}/> },
+        {
+          path: "/home-preview1",
+          element: <DailyAnalysis Redirectpath={Redirectpath} />,
+        },
       ],
     },
     { path: "*", element: <Defaultpage /> }, 
   ];
   return route;
 }
+
+// "roughjs": "^4.6.6",

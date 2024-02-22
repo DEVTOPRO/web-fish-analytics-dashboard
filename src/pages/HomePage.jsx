@@ -13,31 +13,37 @@ import CommonTable from "../common/components/CustomCommonTable";
 import service from "../api/apiSection/service";
 import {cameraList,recordingInfo} from "../api/apiSection/apiUrlConstent"
 import { useForm } from 'react-hook-form';
+import FileUpload from "../common/components/FileUpload";
+import ToggelSwitch from '../common/components/ToggleSwitch';
 const useStyles = makeStyles(theme => ({
   root:{
   padding:'3% 10px',
   },
   vidoeButton:{
     padding:"20px 0px",
+    textAlign:'end'
   },
   tableRoot:{
     padding:'20px 0px',
   },
+  seprateStyle:{fontSize:"15px",fontWeight:"700",margin:"auto",padding:"10px"}
+  ,
+  fileUpload:{border:"2px dashed #fb2929" ,padding:'10px',borderRadius:'20px',padding:'15px',margin:"0px 15px"}
 }))
 const customTitleStyle={color:'#4839be',fontSize: "1.5rem", padding: "9px 0px"};
 
 export default function HomePage(props){
    const refItem=useRef();
    const classes=useStyles();
-   const [urlData,setUrlData]=useState(null);
+   const [urlData,setUrlData]=useState(sessionStorage.getItem("url"));
  const [camerasList,setCameraList]=useState([]);
 const [recordInfo,setRecordInfo]=useState([
-  {cameraName:"Camera FlexA",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"Camera FlexB",recordDate:'2024-02-02',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"Camera FlexC",recordDate:'2024-02-03',hoursList:[{path:"dd",hour:1},{path:"dd",hour:4}]},
-  {cameraName:"Camera FlexD",recordDate:'2024-02-04',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"Camera FlexE",recordDate:'2024-02-05',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"Camera FlexF",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:9}]}]);
+  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-02',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-03',hoursList:[{path:"dd",hour:1},{path:"dd",hour:4}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-04',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-05',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
+  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:9}]}]);
  const {
   register,
   control,
@@ -56,19 +62,9 @@ if(response.data.status=="success"){
   alert("Technical error")
 }
   }).catch((e)=>alert("Please contact to Research Team"))
-},[])
-const dataHandle=(e)=>{
-axios.get("http://localhost:8090/recordingInfo/getRecordingClip?sourcePath=/recordings/2024-02-06/19/faux_camera1/testImgClip.mp4",{
-   responseType: 'arraybuffer'}).then((response)=>{
-        const binaryData = new Blob([response.data], { type: 'video/mp4' });
-        let convertedData = URL.createObjectURL(binaryData);
-        console.log(convertedData)
-        console.log(refItem)
-        if (refItem.current) {
-        setUrlData(true)
-        refItem.current.src = convertedData;
-        }
-});
+},[]);
+const fileHandler=(e)=>{
+console.log(e.target.files[0]);
 }
 const getVidoeInfo=(data)=>{
   console.log("Data Loading",data);
@@ -85,8 +81,69 @@ const getVidoeInfo=(data)=>{
 const RedirectHandler=(path)=>{
   props.Redirectpath(path)
 }
+const urlBuilder=(data)=>{
+  console.log("data",data);
+  setUrlData("true");
+  sessionStorage.setItem("url", "true");
+}
     return (
       <Box className={classes.root}>
+        {urlData!=="true"?
+        <div> <Cardlayout
+          cardContent={
+            <div>
+              <Title title="Source Information" style={customTitleStyle}/> 
+              <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                  <Label labelName={"Request Type*"} />
+                  <Select
+                    displayValue="name"
+                    keyValue="value"
+                    listItems={[{name:"Http",value:'http'},{name:"Https",value:'https'}]}
+                    inputRef={register('reqType', {
+                    })}
+                  />
+                </Grid>
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                <Label labelName={"Host Name*"} />
+                  <Select
+                    displayValue="name"
+                    keyValue="value"
+                    listItems={[{name:"local",value:'localhost'},{name:"FigamaTest",value:'figamaTest'}]}
+                    inputRef={register('hostName', {
+                    })}
+                  />
+                </Grid>
+              
+                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                  <Label labelName={"Port*"} />
+                  <Input
+                    name={"port"}
+                    type={"text"}
+                    inputRef={register('port', {
+                    })}
+                  />
+                </Grid>
+                <div className={classes.seprateStyle}>{"(OR)"}</div>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}className={classes.fileUpload}>
+               <FileUpload handleChange={fileHandler}/>
+                </Grid>
+                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} className={classes.vidoeButton} >
+                  <ActionButton
+                    buttonText={"Submit"}
+                    handleSubmit={handleSubmit(urlBuilder)}
+                    backgroundColor={"#8c7eff"}
+                    width={"fit-content"}
+                    borderRadius={"15px"}
+                  />
+                </Grid>
+              </Grid>
+           
+            </div>
+          }
+        />
+        </div>
+        :<div>
         <Cardlayout
           cardContent={
             <div>
@@ -122,8 +179,9 @@ const RedirectHandler=(path)=>{
                     max={getCurrentDateToDisplay()}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={10} lg={10} xl={10} className={classes.vidoeButton} sx={{
-    margin:'auto'                }}>
+
+                
+                <Grid item xs={12} sm={12} md={10} lg={10} xl={10} className={classes.vidoeButton} sx={{ margin:'auto' }}>
                   <ActionButton
                     buttonText={"Load Video Info"}
                     handleSubmit={handleSubmit(getVidoeInfo)}
@@ -132,27 +190,21 @@ const RedirectHandler=(path)=>{
                     borderRadius={"15px"}
                   />
                 </Grid>
+           
               </Grid>
+           
             </div>
           }
         />
-        <div className={classes.tableRoot}>
+  <div className={classes.tableRoot}>
 <CommonTable
 redirectPage={RedirectHandler}
   data={recordInfo}
-  
+  camerasList={camerasList}
   />
           </div>
+          </div>}
       </Box>
     );
 
 }
-
-
-
-{/* <button onClick={dataHandle}>Specific Vidoe </button>
-<div>
-  <video ref={refItem} controls width="640" height="360">
-    Your browser does not support the video tag.
-  </video>
-</div> */}

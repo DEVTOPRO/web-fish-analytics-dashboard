@@ -9,17 +9,24 @@ import Input from "../common/components/Input";
 import Label from "../common/components/label";
 import CustomModel from "../common/components/modal";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
+<<<<<<< HEAD
 import { useForm } from 'react-hook-form';
 import { useScreenshot } from "use-react-screenshot";
 import Context from "../context/Context";
 import PreviewAndXmlGenerator from "../common/components/PreviewAndXmlGenerator";
 
+=======
+import Select from "../common/components/Select";
+import { useForm } from 'react-hook-form';
+import { makeStyles } from '@mui/styles'
+import AlertMessage from "../common/components/AlertMessage";
+>>>>>>> 0893553e6dc87ce3f8683f4163aafd5c4d57cbf8
 const useStyles = makeStyles(theme => ({
   backButton: {
-    padding: '10px',
-    transition: "transform .2s",
+    padding: '2% 10px 10px',
+    transition: "transform .3s",
     "&:hover": {
-      transform: "scale(1.0)"
+      transform: "scale(0.95)",
     },
   },
   root: {
@@ -62,18 +69,16 @@ const AnnotationEditor = (props) => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  const [image, takeScreenShot] = useScreenshot();
-
-  const handleAnnotationChange = (data) => {
-    console.log("Updated annotations:", data);
-    setAnnotations(data);
-  };
-
+  const [imageData, setImageData] = useState(0);
+  const [imageObj, setImageObj] = useState(contextData.state.framesData&&contextData.state.framesData.length>0?contextData.state.framesData[0]:null);
+  const [annotateInfo, setAnnotateInfo] = useState();
+  const [model, setModel] = useState(false);
+  const [fieldSize,setFieldSize]=useState(["1"]);
+const [errorMessage,setErrorMessage]=useState(null);
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
     );
-    console.log(imageObj);
     setImageObj(imageObj);
   };
 
@@ -116,13 +121,28 @@ const AnnotationEditor = (props) => {
   const onSelect = (selectedId) => console.log(selectedId);
   const onChange = (data) => {
     console.log("Latest value:", data);
-    setAnnotateInfo(data);
+    data&&data.length>0&&data.map((val)=>{
+      if(val&&val.mark.x>0&&val.mark.y>0&&val.mark.width>0){
+        setAnnotateInfo(data);
+        setErrorMessage(null)
+      }else{
+        setErrorMessage("Please Annontate the within image range");
+      }
+    })
+    if(data&&data.length>1){
+      let array = new Array(data.length).fill("1");
+      console.log("sdfsd",array)
+      setFieldSize(array)
+    }
   };
 
   const backHandler = () => {
     props.Redirectpath("/video-farmes-viewer");
   };
-
+  window.onload = (event) => {
+    props.Redirectpath("/video-farmes-viewer");
+  };
+  console.log("sdfdofh")
   return (
     <>
       <div>
@@ -163,11 +183,12 @@ const AnnotationEditor = (props) => {
           </>
         </Paper>
       </div>
-      <div style={{margin:"20px"}}>
+     <div style={{margin:"20px"}}>
         <CardLayout
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
+              {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Grid
                   item
@@ -177,10 +198,9 @@ const AnnotationEditor = (props) => {
                   lg={9}
                   xl={9}
                   style={{
-                    height: "900px",
-                    width: "800px",
+                    height: "600px",
+                    width: "600px",
                     background: "aliceblue",
-                    fontSize: "16px",
                   }}
                   ref={imageRef}
                 >
@@ -195,36 +215,56 @@ const AnnotationEditor = (props) => {
                     onSelect={onSelect}
                     onChange={onChange}
                     defaultAnnotationSize={1}
-                    width={900}
-                    height={900}
+                    width={800}
+                    height={700}
                     ref={canvasRef}
                   />
                 </Grid>
                 <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
-                  <Box
-                    component="typography"
-                    sx={{ width: '95%' }}
-                  > {"Additional Information"}</Box>
+                <Box
+                component="typography"
+                sx={{
+                  width: '95%',
+                }} > {"Additional Information"}</Box>
+                {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{
+                  return(
+                  <> */}
+                   <Label labelName={"Name of Fish*"} />
+                  <Select
+                    displayValue="name"
+                    keyValue="value"
+                    listItems={[{name:"Salmana",value:'salmana'},{name:"White fish",value:'white fish'}]}
+                    inputRef={register(`fishType`, {
+                    })}
+                  />
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"
-                    inputRef={register('pose', { required: true })}
+                    inputRef={register(`pose`, {
+                      required: true,
+                    })}
                     type="text"
                   />
                   <Label labelName={"Truncated *"} />
                   <Input
                     name="truncated"
-                    inputRef={register('truncated', { required: true })}
+                    inputRef={register(`truncated`, {
+                      required: true,
+                    })}
                     type="text"
                   />
                   <Label labelName={"Difficult *"} />
                   <Input
                     name="difficult"
-                    inputRef={register('difficult', { required: true })}
+                    inputRef={register(`difficult`, {
+                      required: true,
+                    })}
                     type="text"
                   />
+                  {/* </>)})} */}
+
                   <ActionButton
-                    buttonText={"Generate XML"}
+                    buttonText={"Submit XML"}
                     handleSubmit={handleSubmit(getImage)}
                     backgroundColor="#8c7eff"
                     borderRadius={"10px"}
@@ -234,7 +274,8 @@ const AnnotationEditor = (props) => {
             </div>
           }
         />
-      </div>
+              </div>
+
       <div>
         <CustomModel
           paddingTop={"0px"}

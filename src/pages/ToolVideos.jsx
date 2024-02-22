@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState, useContext } from "react";
 import CardLayout from "../common/components/CardLayout";
 import SampleImage from "../assets/fishjum.svg";
 import ItemCarousel from "../common/components/Carousel";
-import BackgroundPoster from "../assets/BackgroudPoster.png";
 import SlideshowIcon from "@mui/icons-material/Slideshow";
 import { makeStyles } from "@mui/styles";
 import testVideo from "../assets/testclip.MP4";
@@ -10,27 +9,11 @@ import FrameViewer from "../common/components/FrameViewer";
 import ActionButton from "../common/components/Button";
 import Context from "../context/Context";
 import Paper from "@mui/material/Paper";
+import service from "../api/apiSection/service";
+import {recordSourcePath,recordSource} from "../api/apiSection/apiUrlConstent";
 
-export const defaultShapeStyle = {
-  /** text area **/
-  padding: 5, // text padding
-  fontSize: 12, // text font size
-  fontColor: "#212529", // text font color
-  fontBackground: "#f8f9fa", // text background color
-  fontFamily:
-    "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue', Helvetica, Arial, sans-serif",
+import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
-  /** stroke style **/
-  lineWidth: 2, // stroke width
-  shapeBackground: "hsla(210, 16%, 93%, 0.2)", // background color in the middle of the marker
-  shapeStrokeStyle: "#f8f9fa", // shape stroke color
-  shadowBlur: 10, // stroke shadow blur
-  shapeShadowStyle: "hsla(210, 9%, 31%, 0.35)", // shape shadow color
-
-  /** transformer style **/
-  transformerBackground: "#5c7cfa",
-  transformerSize: 10,
-};
 const useStyles = makeStyles((theme) => ({
   videoCards: {
     color: "#4839be",
@@ -38,6 +21,13 @@ const useStyles = makeStyles((theme) => ({
   mainRoot: {
     padding: "20px 0px",
   },
+  backButton: {
+    padding: '2% 10px 10px',
+    transition: "transform .3s",
+    "&:hover": {
+      transform: "scale(0.95)",
+    },
+  }
 }));
 export default function VideoCollection(props) {
   const classes = useStyles();
@@ -48,18 +38,26 @@ export default function VideoCollection(props) {
   const [imageData, setImageDate] = useState(null);
   const [isFrameView, setIsFrameView] = useState(false);
   const [videoTime,setVideoTime]=useState(null);
+const [videoSourcePath,setvideoSourcePath]=useState([]);
   let sample = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
   const randomColor = () => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
-
+useEffect(()=>{
+service.get(`${recordSourcePath}subPath=${contextData.state.path}`).then((respones)=>{
+if(respones.data.status=="success"&&respones.data.data){
+  setvideoSourcePath(respones.data.data)
+}else{
+alert("Technical Error")
+}
+}).catch((e)=>alert("Please contact to research team"))
+},[])
   const extractImages = () => {
     const video = videoRef.current;
     const initialTime = video.currentTime;
-    
+    setFrames([])
     const endTime = initialTime + 1;
     if (videoRef.current) {
-      let count = 0;
       const interval = setInterval(() => {
         if (endTime <= video.currentTime) {
           clearInterval(interval);
@@ -73,7 +71,6 @@ export default function VideoCollection(props) {
           let frameObject = { imageFrame: frame,width:canvas.width,height:canvas.height };
           setFrames((frames) => [...frames, frameObject]);
           video.currentTime += 0.1;
-          count++;
         }
       }, 42);
     }
@@ -82,19 +79,36 @@ export default function VideoCollection(props) {
     const video = videoRef.current;
     if(key == "play"){
       setIsFrameView(false);
-      video.currentTime = videoTime;
+      // video.currentTime = videoTime;
     } else{
       setIsFrameView(true);
-      setVideoTime(video.currentTime);
+      // setVideoTime(video.currentTime); 
     }
   };
   const imageAnnotator = () => {
     contextData.dispatch({ type: "framesData", value: [...frames] });
-    props.Redirectpath("/video-farmes-extactor  ");
+    props.Redirectpath("/video-farmes-extactor");
   };
+  const recordLoader=(subSrcPath)=>{
+  service.get(`${recordSource}sourcePath=${subSrcPath}`,'arraybuffer').then((respones)=>{
+      if(respones.data){
+        const binaryData = new Blob([respones.data], { type: 'video/mp4' });
+        let convertedData = URL.createObjectURL(binaryData);
+        if (videoRef.current) {
+        videoRef.current.src = convertedData;
+        }
+      }else{
+      alert("Technical Error")
+      }
+      }).catch((e)=>alert("Please contact to research team"))
+ 
+  }
+const backHandler=()=>{
+ props.Redirectpath("/");
+}
   const subContent = () => {
-    return sample.map((data) => (
-      <div style={{ padding: "3%" }}>
+    return videoSourcePath.map((data) => (
+      <div style={{ padding: "3%" }} onClick={()=>recordLoader(data.url)}>
         <CardLayout
           borderRadius={"4px"}
           // backgroundColor={randomColor()}
@@ -118,7 +132,7 @@ export default function VideoCollection(props) {
                     />{" "}
                   </div>
                 </div>
-                <h6 className="legend">Legend {data}</h6>
+                <h6 className="legend">Recording- {data.name}</h6>
               </div>
             </div>
           }
@@ -126,23 +140,33 @@ export default function VideoCollection(props) {
       </div>
     ));
   };
+
   return (
     <div>
+    <div className={classes.backButton}>
+          <ActionButton
+            buttonText={<><KeyboardArrowLeft /> {"Back to Home"}</>}
+            handleSubmit={backHandler}
+            backgroundImage={"#395d91d6"}
+            borderRadius={"10px"}
+            width={"fit-content"}
+          />
+        </div>
       <div>
         <ItemCarousel dataContent={subContent()} />
       </div>
       <div className={classes.mainRoot}>
+     
         <CardLayout
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
-              <video
+                <video
                 ref={videoRef}
                 src={testVideo}
-                type="video/mp4"
+                controls
                 style={{ padding: "10px", borderRadius: "15px" }}
                 width="100%"
-                controls
                 onPause={() => videoHandler("pause")}
                 onPlay={() => videoHandler("play")}
               />

@@ -23,7 +23,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiDialog-paperWidthSm': {
       width: '100%',
       borderRadius: '3px',
-      minWidth:'700px'
+      minWidth:'800px',
     },
   },
   root3: {

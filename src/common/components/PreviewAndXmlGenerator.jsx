@@ -3,8 +3,9 @@ import JSZip from 'jszip';
 import { saveAs } from 'file-saver';
 import Title from './Title';
 import ActionButton from './Button';
+import { useScreenshot } from "use-react-screenshot";
 import { makeStyles } from '@mui/styles'
-import { Co2Sharp } from '@mui/icons-material';
+import { SecurityUpdateWarning } from '@mui/icons-material';
 
 const useStyles = makeStyles(theme => ({
   boundingBox:{
@@ -13,38 +14,41 @@ const useStyles = makeStyles(theme => ({
     boxSizing: "border-box",
   },
   frameContainer: {
-    position: "relative",
+    position: "absolute",
     display: "inline-block",
     marginRight: "10px" /* Adjust spacing between frames */
   },
   frame: {
     display: "block",
-    width:"1280",
+    width:"100%",
     height: "720",
   }
 }))
 
 export default function VideoToFrames (props){
-  const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const [image, takeScreenShot] = useScreenshot();
+  const [data,setData]=useState("sdfad");
   const classes = useStyles();
-  const [frames, setFrames] = useState([]);
-  const [annotationStyle, setAnnotationStyle] = useState({ left: '826px', top: '339px', width: '382px', height: '365px' });
+  let sampleImg="https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
 
-  // const drawRectangle = (xi,yi,widthf,heightf) => {
-  //  let x=xi?xi:120;
-  //  let y=yi?yi:140;
-  //  let width=widthf?widthf:130;
-  //  let  height=heightf?heightf:200;
-  //   console.log(x,y,width,height,"adfadf");
-  //   const context = canvasRef.current.getContext("2d");
-  //   context.strokeStyle = "red";
-  //   context.lineWidth = 1;
-  //   context.strokeRect(x, y, width, height);
-  //   console.log("use effect");
-  // };
-
-
+  useEffect(()=>{  
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    const backgroundImage = new Image();
+    backgroundImage.src = props.imageData?props.imageData.imageFrame:sampleImg;
+    backgroundImage.onload = () => {
+      context.drawImage(backgroundImage, 0, 0, canvas.width, canvas.height);
+      props.annotateInfo.coordiants&& props.annotateInfo.coordiants.length>0&& props.annotateInfo.coordiants.map((data)=>{
+      // Draw the rectangle box
+      context.beginPath();
+      context.strokeRect((data.xMin*0.550), data.yMin, (data.strokeWidth*0.550), data.strokeHeight); // (x, y, width, height)
+      context.strokeStyle = 'red'; // Set the border color
+      context.lineWidth = 1; // Set the border width
+      context.stroke();
+    });
+    }
+  },[])
 
 const subXmlGenrator=(subAnnainfo)=>{
 
@@ -60,6 +64,14 @@ const subXmlGenrator=(subAnnainfo)=>{
      \t\t\t<ymax>${subAnnainfo.yMax}</ymax> 
      \t\t</bndbox>
     \t</object>`
+}
+const getImage = () => {
+  console.log("adfasf",canvasRef.current)
+  takeScreenShot(canvasRef.current);
+
+  setTimeout(()=>{
+    console.log(image)
+  },5000)
 }
 const createZip = () => {
     const zip = new JSZip();
@@ -92,20 +104,19 @@ const createZip = () => {
         saveAs(content, 'frames_and_annotations.zip');
       }).catch(error => console.error('Error creating ZIP file:', error));
   };
-  let sampleImg="https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
-  console.log(props.annotateInfo,"props.annotateInfo");
   return (
     <div>
-      <div className={classes.frameContainer}>
-           <img src={props.imageData?props.imageData.imageFrame:sampleImg} className={classes.frame}/>
-    {props.annotateInfo.coordiants.length>0&&props.annotateInfo.coordiants.map((frameInfo)=>(<div className={classes.boundingBox} style={{ left: `${frameInfo.xMin}px`, top: `${frameInfo.yMin}px`, width: `${frameInfo.strokeWidth}px`, height: `${frameInfo.strokeHeight}px` }}></div> ))}
-      </div>  
+      <div style={{ padding: "2%" }}>
+        <canvas ref={canvasRef} width={700} height={720}>
+          Your browser does not support the HTML5 canvas tag.
+        </canvas>
+      </div>
       <ActionButton
-                    buttonText={"Genrato XMl"}
-                    handleSubmit={createZip}
-                    backgroundColor="#8c7eff"
-                    borderRadius={"10px"}
-                  />
+        buttonText={"Genrato XMl"}
+        handleSubmit={createZip}
+        backgroundColor="#8c7eff"
+        borderRadius={"10px"}
+      />
     </div>
   );
 };
