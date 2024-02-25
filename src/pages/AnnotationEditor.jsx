@@ -65,7 +65,6 @@ export default function AnnotationEditor(props) {
   const canvasRef = useRef(null);
   const imageRef = useRef(null);
   const contextData = useContext(Context);
-  const [image, takeScreenShot] = useScreenshot();
   const [annotations, setAnnotations] = React.useState([]);
   const {
     register,
@@ -78,7 +77,7 @@ export default function AnnotationEditor(props) {
     getValues,
   } = useForm();
   const [imageData, setImageData] = useState(0);
-  const [imageObj, setImageObj] = useState(null);
+  const [imageObj, setImageObj] = useState(contextData.state.framesData&&contextData.state.framesData.length>0?contextData.state.framesData[0]:null);
   const [annotateInfo, setAnnotateInfo] = useState();
   const [model, setModel] = useState(false);
   const [fieldSize,setFieldSize]=useState(["1"]);
@@ -107,7 +106,7 @@ export default function AnnotationEditor(props) {
     sampleObject.height = imageObj.height;
     sampleObject.imageString = imageObj.imageFrame;
     sampleObject.depth = 3;
-    sampleObject.coordiants = annotateInfo.map((annotateData) => {
+    sampleObject.coordiants = annotations.map((annotateData) => {
      let coordiants={};
        coordiants.xMax = Math.round(annotateData.mark.x + annotateData.mark.width);
        coordiants.yMax = Math.round(annotateData.mark.y + annotateData.mark.height);
@@ -121,17 +120,15 @@ export default function AnnotationEditor(props) {
        coordiants.annotateName = data.comment ? data.comment : "fish view";
       return  coordiants;
     });
-    console.log("sampleObject", sampleObject);
     setAnnotateInfo(sampleObject);
     setModel(true);
   };
-
   const onSelect = (selectedId) => console.log(selectedId);
   const onChange = (data) => {
     console.log("Latest value:", data);
     data&&data.length>0&&data.map((val)=>{
       if(val&&val.mark.x>0&&val.mark.y>0&&val.mark.width>0){
-        setAnnotateInfo(data);
+        setAnnotations(data);
         setErrorMessage(null)
       }else{
         setErrorMessage("Please Annontate the within image range");
@@ -149,7 +146,6 @@ export default function AnnotationEditor(props) {
   window.onload = (event) => {
     props.Redirectpath("/video-farmes-viewer");
   };
-  console.log("sdfdofh")
   
   return (
     <>
@@ -202,12 +198,12 @@ export default function AnnotationEditor(props) {
                   item
                   xs={12}
                   sm={12}
-                  md={9}
-                  lg={9}
-                  xl={9}
+                  md={10}
+                  lg={10}
+                  xl={10}
                   style={{
                     height: "600px",
-                    width: "600px",
+                    width: "100%",
                     background: "aliceblue",
                   }}
                   ref={imageRef}
@@ -224,19 +220,19 @@ export default function AnnotationEditor(props) {
                     onChange={onChange}
                     onDelete={<div>sadas</div>}
                     defaultAnnotationSize={1}
-                    width={800}
+                    width={780}
                     height={700}
                     ref={canvasRef}
                   />
                 </Grid>
-                <Grid item xs={12} sm={12} md={3} lg={3} xl={3}>
+                <Grid item xs={12} sm={12} md={2} lg={2} xl={2}>
                 <Box
                 component="typography"
                 sx={{
                   width: '95%',
                 }} > {"Additional Information"}</Box>
-                    {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{
-                  return(
+                    {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{ */}
+                  {/* return(
                   <> */}
                   <Label labelName={"Name of Fish*"} />
                   <Select
@@ -246,6 +242,7 @@ export default function AnnotationEditor(props) {
                     inputRef={register(`fishType`, {
                     })}
                   />
+                   {/* </>)})} */}
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"
@@ -254,7 +251,6 @@ export default function AnnotationEditor(props) {
                     })}
                     type="text"
                   />
-
                   <Label labelName={"Truncated *"} />
                   <Input
                     name="truncated"
@@ -271,7 +267,7 @@ export default function AnnotationEditor(props) {
                     })}
                     type="text"
                   />
-  {/* </>)})} */}
+  
                   <ActionButton
                     buttonText={"Submit XMl"}
                     handleSubmit={handleSubmit(getImage)}

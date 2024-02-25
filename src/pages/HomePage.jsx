@@ -1,5 +1,4 @@
 import  React,{useEffect, useRef, useState,Fragment, useLayoutEffect} from 'react'
-import axios from 'axios';
 import Cardlayout from '../common/components/CardLayout';
 import Input from "../common/components/Input";
 import Select from "../common/components/Select";
@@ -198,7 +197,7 @@ const urlBuilder=(data)=>{
         />
   <div className={classes.tableRoot}>
 <CommonTable
-redirectPage={RedirectHandler}
+  redirectPage={RedirectHandler}
   data={recordInfo}
   camerasList={camerasList}
   />

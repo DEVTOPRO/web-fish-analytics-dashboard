@@ -16,6 +16,7 @@ import Select from "./NewSelect";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import Context from '../../context/Context';
+import AlertMessage from "./AlertMessage";
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -142,10 +143,11 @@ export default function EnhancedTable(props) {
   let rows=props.data
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
-  const [selected, setSelected] = React.useState([]);
+  const [selected, setSelected] = React.useState(null);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [errorMessage,setErrorMessage]=React.useState(null);
 const context=React.useContext(Context);
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -164,7 +166,8 @@ const context=React.useContext(Context);
   };
 
   const selectHandler = (event) => {
-setSelected(event.target.value);
+   errorMessage&&setErrorMessage(null);
+  setSelected({nameIndex:event.target.name,value:event.target.value});
   };
 
 
@@ -180,14 +183,21 @@ setSelected(event.target.value);
       ),
     [order, orderBy, page, rowsPerPage,rows],
   );
-const frameClipsViwer=()=>{
-  context.dispatch({ type: "path", value:selected });
-props.redirectPage("/video-farmes-viewer");
+const frameClipsViwer=(key)=>{
+  console.log(key,selected)
+  if(selected&&selected.nameIndex==key){
+    context.dispatch({ type: "path", value: selected.value});
+    props.redirectPage("/video-farmes-viewer");
+  }else{
+    setErrorMessage("Your selected row field is Manadatory")
+  }
 } 
 
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '98%', mb: 2 ,padding:"15px",boxShadow:"0px 0px 1px 1px rgb(0,0,0,0.2)"}}>
+      {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
+
         <TableContainer>
           <Table
             sx={{ minWidth: 750 }}
@@ -195,7 +205,7 @@ props.redirectPage("/video-farmes-viewer");
             size={dense ? 'small' : 'medium'}
           >
             <EnhancedTableHead
-              numSelected={selected.length}
+              // numSelected={selected.length}
               order={order}
               orderBy={orderBy}
               onRequestSort={handleRequestSort}
@@ -219,13 +229,16 @@ props.redirectPage("/video-farmes-viewer");
                     <TableCell align="center">{row.recordDate}</TableCell>
                     <TableCell align="center">{"Login Time"}</TableCell>
                     <TableCell align="center">{<CheckCircleIcon sx={{color:"#00be09"}}/>}</TableCell>
-                    <TableCell align="center"><Select
+                    <TableCell align="center">
+                      <Select
                       displayValue="hour"
                       keyValue="path"
+                      name={`noHours${index}`}
+                      required={true}
                       handleChange={selectHandler}
                       listItems={row.hoursList}
                     /></TableCell>
-                    <TableCell align="center">{<VisibilityIcon sx={{color:"#5f4fad"}} onClick={frameClipsViwer}/>}</TableCell>
+                    <TableCell align="center">{<VisibilityIcon type={"submit"}sx={{color:"#5f4fad"}} onClick={()=>frameClipsViwer(`noHours${index}`)}/>}</TableCell>
                   </TableRow>
                 );
               })}

@@ -92,11 +92,12 @@ export default function NewSelect(props) {
         }
         id={props.id}
         disabled={props.disabled}
+        required={props.required}
         onChange={props.handleChange}
         value={props.value}
-        {...props.register}
+        {...props.inputRef}
       >
-        <option value="">Select
+        <option value="">Select*
         </option>
         {listData.map((value, index) => (
           <option key={index} value={value[props.keyValue]}>

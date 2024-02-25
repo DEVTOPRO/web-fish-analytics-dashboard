@@ -4,7 +4,6 @@ import { makeStyles } from '@mui/styles';
 
 const useStyles = makeStyles(theme => ({
   backdrop: {
-    // zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
 }));
@@ -13,8 +12,8 @@ export default function SimpleBackdrop(props) {
   const classes = useStyles();
   return (
     <div>
-      <Backdrop className={classes.backdrop} open={props.open}>
-        <CircularProgress color="inherit" />
+      <Backdrop  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 3 }} open={props.open}>
+        <CircularProgress color="inherit" size={60}/>
       </Backdrop>
     </div>
   );

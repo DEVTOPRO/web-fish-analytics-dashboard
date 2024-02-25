@@ -11,7 +11,7 @@ import Context from "../context/Context";
 import Paper from "@mui/material/Paper";
 import service from "../api/apiSection/service";
 import {recordSourcePath,recordSource} from "../api/apiSection/apiUrlConstent";
-
+import Loading from "../common/components/Loading";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 
 const useStyles = makeStyles((theme) => ({
@@ -27,6 +27,14 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       transform: "scale(0.95)",
     },
+  },
+  videoCard:{
+    padding:"3%",
+    cursor:"pointer",
+    transition: "transform .4s",
+    "&:hover": {
+      transform: "scale(0.85)",
+    },
   }
 }));
 export default function VideoCollection(props) {
@@ -35,7 +43,7 @@ export default function VideoCollection(props) {
   const canvasRef = useRef(null);
   const contextData = useContext(Context);
   const [frames, setFrames] = useState([]);
-  const [imageData, setImageDate] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [isFrameView, setIsFrameView] = useState(false);
   const [videoTime,setVideoTime]=useState(null);
 const [videoSourcePath,setvideoSourcePath]=useState([]);
@@ -44,15 +52,22 @@ const [videoSourcePath,setvideoSourcePath]=useState([]);
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
 useEffect(()=>{
+  setLoading(true)
 service.get(`${recordSourcePath}subPath=${contextData.state.path}`).then((respones)=>{
 if(respones.data.status=="success"&&respones.data.data){
   setvideoSourcePath(respones.data.data)
+  setLoading(false)
 }else{
-alert("Technical Error")
+alert("Technical Error");
+setLoading(false);
 }
-}).catch((e)=>alert("Please contact to research team"))
+}).catch((e)=>{
+  alert("Please contact to research team");
+  setLoading(false)
+})
 },[])
   const extractImages = () => {
+    setLoading(true);
     const video = videoRef.current;
     const initialTime = video.currentTime;
     setFrames([])
@@ -61,6 +76,7 @@ alert("Technical Error")
       const interval = setInterval(() => {
         if (endTime <= video.currentTime) {
           clearInterval(interval);
+          setLoading(false);
         } else {
           const canvas = document.createElement("canvas");
           const context = canvas.getContext("2d");
@@ -106,13 +122,14 @@ alert("Technical Error")
 const backHandler=()=>{
  props.Redirectpath("/");
 }
+// rgba(136, 51, 153, 0.133)
   const subContent = () => {
-    return videoSourcePath.map((data) => (
-      <div style={{ padding: "3%" }} onClick={()=>recordLoader(data.url)}>
+    return videoSourcePath.map((data,index) => (
+      <div className={classes.videoCard} onClick={()=>recordLoader(data.url)}>
         <CardLayout
           borderRadius={"4px"}
           // backgroundColor={randomColor()}
-          // backgroundImage={`url(${SampleImage})`}
+          backgroundImage={(index%2==0)?"radial-gradient(circle, rgb(223 196 176) 0%, rgb(148 187 233 / 72%) 100%)":"linear-gradient(306deg, #924fd5de, transparent)"}
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
@@ -143,6 +160,7 @@ const backHandler=()=>{
 
   return (
     <div>
+      <Loading open={loading}/>
     <div className={classes.backButton}>
           <ActionButton
             buttonText={<><KeyboardArrowLeft /> {"Back to Home"}</>}
