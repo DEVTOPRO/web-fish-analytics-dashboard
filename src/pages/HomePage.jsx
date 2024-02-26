@@ -1,209 +1,260 @@
-import  React,{useEffect, useRef, useState,Fragment, useLayoutEffect} from 'react'
-import Cardlayout from '../common/components/CardLayout';
+import React, {
+  useEffect,
+  useRef,
+  useState,
+  Fragment,
+  useLayoutEffect,
+} from "react";
+import Cardlayout from "../common/components/CardLayout";
 import Input from "../common/components/Input";
 import Select from "../common/components/Select";
-import Label from "../common/components/label"
-import { makeStyles } from '@mui/styles';
-import Title from '../common/components/Title';
-import {getCurrentDateToDisplay} from "../utils/utilSub/Date"
-import { Box, Grid } from '@mui/material';
+import Label from "../common/components/label";
+import { makeStyles } from "@mui/styles";
+import Title from "../common/components/Title";
+import { getCurrentDateToDisplay } from "../utils/utilSub/Date";
+import { Box, Grid } from "@mui/material";
 import ActionButton from "../common/components/Button";
 import CommonTable from "../common/components/CustomCommonTable";
 import service from "../api/apiSection/service";
-import {cameraList,recordingInfo} from "../api/apiSection/apiUrlConstent"
-import { useForm } from 'react-hook-form';
+import { cameraList, recordingInfo } from "../api/apiSection/apiUrlConstent";
+import { useForm } from "react-hook-form";
 import FileUpload from "../common/components/FileUpload";
-import ToggelSwitch from '../common/components/ToggleSwitch';
-const useStyles = makeStyles(theme => ({
-  root:{
-  padding:'3% 10px',
+import AlertMessage from "../common/components/AlertMessage";
+import ErrorMessage from "../common/components/ErrorMessage";
+import { timeOutCaller } from "../utils/utilSub/ArrayMethods";
+import CloseIcon from "@mui/icons-material/Close";
+import ToggleSwitch from "../common/components/ToggleSwitch";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    padding: "3% 10px",
   },
-  vidoeButton:{
-    padding:"20px 0px",
-    textAlign:'end'
+  vidoeButton: {
+    padding: "20px 0px",
+    textAlign: "end",
   },
-  tableRoot:{
-    padding:'20px 0px',
+  tableRoot: {
+    padding: "20px 0px",
   },
-  seprateStyle:{fontSize:"15px",fontWeight:"700",margin:"auto",padding:"10px"}
-  ,
-  fileUpload:{border:"2px dashed #fb2929" ,padding:'10px',borderRadius:'20px',padding:'15px',margin:"0px 15px"}
-}))
-const customTitleStyle={color:'#4839be',fontSize: "1.5rem", padding: "9px 0px"};
+  seprateStyle: {
+    fontSize: "15px",
+    fontWeight: "700",
+    margin: "auto",
+    padding: "10px",
+  },
+  titleRoot: { display: "flex", justifyContent: "space-between" },
+  fileCard: {
+    display: "flex",
+    justifyContent: "space-between",
+  },
+  fileUpload: {
+    border: "2px dashed #fb2929",
+    padding: "10px",
+    borderRadius: "20px",
+    padding: "15px",
+    margin: "0px 15px",
+  },
+}));
+const customTitleStyle = {
+  color: "#4839be",
+  fontSize: "1.5rem",
+  padding: "9px 0px",
+};
 
-export default function HomePage(props){
-   const refItem=useRef();
-   const classes=useStyles();
-   const [urlData,setUrlData]=useState(sessionStorage.getItem("url"));
- const [camerasList,setCameraList]=useState([]);
-const [recordInfo,setRecordInfo]=useState([
-  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"faux_camera1",recordDate:'2024-02-02',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"faux_camera1",recordDate:'2024-02-03',hoursList:[{path:"dd",hour:1},{path:"dd",hour:4}]},
-  {cameraName:"faux_camera1",recordDate:'2024-02-04',hoursList:[{path:"dd",hour:1},{path:"dd",hour:2}]},
-  {cameraName:"faux_camera1",recordDate:'2024-02-05',hoursList:[{path:"dd",hour:1},{path:"dd",hour:3}]},
-  {cameraName:"faux_camera1",recordDate:'2024-02-01',hoursList:[{path:"dd",hour:1},{path:"dd",hour:9}]}]);
- const {
-  register,
-  control,
-  handleSubmit,
-  watch,
-  reset,
-  formState: { errors },
-  setValue,
-  getValues,
-} = useForm();
-useLayoutEffect(()=>{
-  service.get(cameraList).then((response)=>{
-if(response.data.status=="success"){
-  response.data.data&&response.data.data.length>0&&setCameraList(response.data.data);
-}else{
-  alert("Technical error")
-}
-  }).catch((e)=>alert("Please contact to Research Team"))
-},[]);
-const fileHandler=(e)=>{
-console.log(e.target.files[0]);
-}
-const getVidoeInfo=(data)=>{
-  console.log("Data Loading",data);
-  service.get(`${recordingInfo}cameraName=${data.cameraName}`).then((response)=>{
-    if(response.data.status=="success"){
-      response.data.data&&response.data.data.length>0&&setRecordInfo(response.data.data);
-      reset();
-    }else{
-      alert("Technical error")
+export default function HomePage(props) {
+  const refItem = useRef();
+  const classes = useStyles();
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const [camerasList, setCameraList] = useState([]);
+  const [recordInfo, setRecordInfo] = useState([]);
+  const [fileData, setFileData] = useState(null);
+  const {
+    register,
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors },
+    setValue,
+    getValues,
+  } = useForm();
+  useLayoutEffect(() => {
+    service
+      .get(cameraList)
+      .then((response) => {
+        if (response.data.status == "success") {
+          response.data.data &&
+            response.data.data.length > 0 &&
+            setCameraList(response.data.data);
+        } else {
+          alert("Technical error");
+        }
+      })
+      .catch((e) => alert("Please contact to Research Team"));
+  }, []);
+
+  const fileHandler = (e) => {
+    console.log(e.target.files[0]);
+    setFileData(e.target.files[0].name);
+  };
+  const getVidoeInfo = (data) => {
+    console.log("data", data);
+    if (!checked) {
+      service
+        .get(`${recordingInfo}cameraName=${data.cameraName}`)
+        .then((response) => {
+          if (response.data.status == "success") {
+            setErrorMessage({
+              message: "Information loaded successfully",
+              status: "success",
+            });
+            response.data.data &&
+              response.data.data.length > 0 &&
+              setRecordInfo(response.data.data);
+            reset();
+          } else {
+            setErrorMessage({ message: "Technical Error", status: "error" });
+          }
+        })
+        .catch((e) => alert("Please contact to Research Team"));
+    } else {
+      alert("Working inprogress");
     }
-  }).catch((e)=>alert("Please contact to Research Team"))
-
-}
-const RedirectHandler=(path)=>{
-  props.Redirectpath(path)
-}
-const urlBuilder=(data)=>{
-  console.log("data",data);
-  setUrlData("true");
-  sessionStorage.setItem("url", "true");
-}
-    return (
-      <Box className={classes.root}>
-        {urlData!=="true"?
-        <div> <Cardlayout
-          cardContent={
-            <div>
-              <Title title="Source Information" style={customTitleStyle}/> 
-              <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <Label labelName={"Request Type*"} />
-                  <Select
-                    displayValue="name"
-                    keyValue="value"
-                    listItems={[{name:"Http",value:'http'},{name:"Https",value:'https'}]}
-                    inputRef={register('reqType', {
-                    })}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                <Label labelName={"Host Name*"} />
-                  <Select
-                    displayValue="name"
-                    keyValue="value"
-                    listItems={[{name:"local",value:'localhost'},{name:"FigamaTest",value:'figamaTest'}]}
-                    inputRef={register('hostName', {
-                    })}
-                  />
-                </Grid>
-              
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <Label labelName={"Port*"} />
-                  <Input
-                    name={"port"}
-                    type={"text"}
-                    inputRef={register('port', {
-                    })}
-                  />
-                </Grid>
-                <div className={classes.seprateStyle}>{"(OR)"}</div>
-                <Grid item xs={12} sm={12} md={12} lg={12} xl={12}className={classes.fileUpload}>
-               <FileUpload handleChange={fileHandler}/>
-                </Grid>
-                <Grid item xs={12} sm={12} md={12} lg={12} xl={12} className={classes.vidoeButton} >
-                  <ActionButton
-                    buttonText={"Submit"}
-                    handleSubmit={handleSubmit(urlBuilder)}
-                    backgroundColor={"#8c7eff"}
-                    width={"fit-content"}
-                    borderRadius={"15px"}
-                  />
-                </Grid>
-              </Grid>
-           
+    timeOutCaller(setErrorMessage, 5000);
+  };
+  const RedirectHandler = (path) => {
+    props.Redirectpath(path);
+  };
+  const switchHandler = (event) => {
+    setChecked(event.target.checked);
+  };
+  return (
+    <Box className={classes.root}>
+      <Cardlayout
+        cardContent={
+          <div>
+            <div className={classes.titleRoot}>
+              <Title
+                title="Welcome to Anotation analyer from stream from frigate Information"
+                style={customTitleStyle}
+              />
+              <ToggleSwitch onChange={switchHandler} />
             </div>
-          }
-        />
-        </div>
-        :<div>
-        <Cardlayout
-          cardContent={
-            <div>
-              <Title title="Welcome to Anotation analyer from stream from frigate Information" style={customTitleStyle}/>
-              <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <Label labelName={"Select camera *"} />
-                  <Select
-                    displayValue="name"
-                    keyValue="value"
-                    listItems={camerasList}
-                    inputRef={register('cameraName', {
-                    })}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <Label labelName={"Start Date*"} />
-                  <Input
-                    name={"startDate"}
-                    type={"date"}
-                    inputRef={register('startDate', {
-                    })}
-                    max={getCurrentDateToDisplay()}
-                  />
-                </Grid>
-                <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
-                  <Label labelName={"End Date*"} />
-                  <Input
-                    name={"endDate"}
-                    type={"date"}
-                    inputRef={register('endDate', {
-                    })}
-                    max={getCurrentDateToDisplay()}
-                  />
-                </Grid>
-
-                
-                <Grid item xs={12} sm={12} md={10} lg={10} xl={10} className={classes.vidoeButton} sx={{ margin:'auto' }}>
-                  <ActionButton
-                    buttonText={"Load Video Info"}
-                    handleSubmit={handleSubmit(getVidoeInfo)}
-                    backgroundColor={"#8c7eff"}
-                    // width={"fit-content"}
-                    borderRadius={"15px"}
-                  />
-                </Grid>
-           
+            {errorMessage && (
+              <AlertMessage
+                message={errorMessage.message}
+                status={errorMessage.status}
+              />
+            )}
+            <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
+              {checked ? (
+                <>
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    xl={12}
+                    className={classes.fileUpload}
+                  >
+                    <FileUpload
+                      handleChange={fileHandler}
+                      fileInfo={fileData}
+                    />
+                    <div>
+                      {errors &&
+                        errors.videoFile &&
+                        errors.videoFile.type === "required" && (
+                          <ErrorMessage message={"required !!"} />
+                        )}
+                    </div>
+                  </Grid>
+                  <div className={classes.seprateStyle}>
+                    {" "}
+                    {fileData && (
+                      <Cardlayout
+                        width={"300px"}
+                        cardContent={
+                          <div className={classes.fileCard}>
+                            <div>{fileData}</div>
+                            <CloseIcon />
+                          </div>
+                        }
+                      />
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <Label labelName={"Select camera *"} />
+                    <Select
+                      displayValue="name"
+                      keyValue="value"
+                      listItems={camerasList}
+                      inputRef={register("cameraName", { required: true })}
+                    />
+                    <div>
+                      {errors &&
+                        errors.cameraName &&
+                        errors.cameraName.type === "required" && (
+                          <ErrorMessage message={"required !!"} />
+                        )}
+                    </div>
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <Label labelName={"Start Date"} />
+                    <Input
+                      name={"startDate"}
+                      type={"date"}
+                      inputRef={register("startDate", {})}
+                      max={getCurrentDateToDisplay()}
+                    />
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
+                    <Label labelName={"End Date "} />
+                    <Input
+                      name={"endDate"}
+                      type={"date"}
+                      inputRef={register("endDate", {})}
+                      max={getCurrentDateToDisplay()}
+                    />
+                  </Grid>
+                </>
+              )}
+              <Grid
+                item
+                xs={12}
+                sm={12}
+                md={10}
+                lg={10}
+                xl={10}
+                className={classes.vidoeButton}
+                sx={{ margin: "auto" }}
+              >
+                <ActionButton
+                  buttonText={"Load Video Info"}
+                  handleSubmit={handleSubmit(getVidoeInfo)}
+                  backgroundColor={"#8c7eff"}
+                  // width={"fit-content"}
+                  borderRadius={"15px"}
+                />
               </Grid>
-           
-            </div>
-          }
-        />
-  <div className={classes.tableRoot}>
-<CommonTable
-  redirectPage={RedirectHandler}
-  data={recordInfo}
-  camerasList={camerasList}
-  />
+            </Grid>
           </div>
-          </div>}
-      </Box>
-    );
-
+        }
+      />
+      <div className={classes.tableRoot}>
+        {recordInfo && recordInfo.length > 0 ? (
+          <CommonTable
+            redirectPage={RedirectHandler}
+            data={recordInfo}
+            camerasList={camerasList}
+          />
+        ) : (
+          <div>{"Preview of "}</div>
+        )}
+      </div>
+    </Box>
+  );
 }

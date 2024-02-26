@@ -39,6 +39,9 @@ const useStyles = makeStyles(theme => ({
     height: "100vh",
     background: "#f0f0f0",
   },
+  submitButton:{
+    padding:'10px 0px'
+  }
 })) 
 export const defaultShapeStyle = {
   /** text area **/
@@ -98,15 +101,16 @@ export default function AnnotationEditor(props) {
     setModel(false);
   };
   const getImage = (data) => {
+    console.log(data,"data");
     let sampleObject = {};
     sampleObject.folderName = "my project";
     sampleObject.imageName = "cameraname_flex_frame_index";
-    sampleObject.database = "file System";
+    sampleObject.database = "File System";
     sampleObject.width = imageObj.width;
     sampleObject.height = imageObj.height;
     sampleObject.imageString = imageObj.imageFrame;
     sampleObject.depth = 3;
-    sampleObject.coordiants = annotations.map((annotateData) => {
+    sampleObject.coordiants = annotations.map((annotateData,index) => {
      let coordiants={};
        coordiants.xMax = Math.round(annotateData.mark.x + annotateData.mark.width);
        coordiants.yMax = Math.round(annotateData.mark.y + annotateData.mark.height);
@@ -117,11 +121,12 @@ export default function AnnotationEditor(props) {
        coordiants.pose=data.pose;
        coordiants.diffcult=data.difficult;
        coordiants.truncated=data.truncated;
-       coordiants.annotateName = data.comment ? data.comment : "fish view";
-      return  coordiants;
+       coordiants.annotateName = annotateData.comment ? annotateData.comment : data[`fishType${index}`];
+      return coordiants;
     });
+    console.log(sampleObject,"sampleObject");
     setAnnotateInfo(sampleObject);
-    setModel(true);
+    // setModel(true);
   };
   const onSelect = (selectedId) => console.log(selectedId);
   const onChange = (data) => {
@@ -136,8 +141,9 @@ export default function AnnotationEditor(props) {
     })
     if(data&&data.length>1){
       let array = new Array(data.length).fill("1");
-      console.log("sdfsd",array)
       setFieldSize(array)
+    }else{
+      setFieldSize(['1'])
     }
   };
   const backHandler = () => {
@@ -192,7 +198,7 @@ export default function AnnotationEditor(props) {
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>
- {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
+              {errorMessage&&<AlertMessage message={errorMessage} status={"error"}/>}
               <Grid container item xs={12} sm={12} md={12} lg={12} xl={12}>
                 <Grid
                   item
@@ -218,7 +224,6 @@ export default function AnnotationEditor(props) {
                     scrollSpeed={0}
                     onSelect={onSelect}
                     onChange={onChange}
-                    onDelete={<div>sadas</div>}
                     defaultAnnotationSize={1}
                     width={780}
                     height={700}
@@ -230,19 +235,21 @@ export default function AnnotationEditor(props) {
                 component="typography"
                 sx={{
                   width: '95%',
+                  fontWeight:'600',
+                  fontSize:"13px"
                 }} > {"Additional Information"}</Box>
-                    {/* {fieldSize.length>0 && fieldSize.map((field,index)=>{ */}
-                  {/* return(
-                  <> */}
-                  <Label labelName={"Name of Fish*"} />
+                    {fieldSize.length>0 && fieldSize.map((field,index)=>{ 
+                  return(
+                  <>
+                  <Label labelName={`Name of Fish${index+1}*`} />
                   <Select
                     displayValue="name"
                     keyValue="value"
                     listItems={[{name:"Salmana",value:'salmana'},{name:"White fish",value:'white fish'}]}
-                    inputRef={register(`fishType`, {
+                    inputRef={register(`fishType${index}`, {
                     })}
                   />
-                   {/* </>)})} */}
+                   </>)})}
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"
@@ -267,13 +274,14 @@ export default function AnnotationEditor(props) {
                     })}
                     type="text"
                   />
-  
+                <div className={classes.submitButton}>
                   <ActionButton
                     buttonText={"Submit XMl"}
                     handleSubmit={handleSubmit(getImage)}
                     backgroundColor="#8c7eff"
                     borderRadius={"10px"}
                   />
+                  </div>
                 </Grid>
               </Grid>
             </div>

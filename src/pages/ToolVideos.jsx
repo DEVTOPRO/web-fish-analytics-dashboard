@@ -13,7 +13,7 @@ import service from "../api/apiSection/service";
 import {recordSourcePath,recordSource} from "../api/apiSection/apiUrlConstent";
 import Loading from "../common/components/Loading";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-
+// "/media/frigate"
 const useStyles = makeStyles((theme) => ({
   videoCards: {
     color: "#4839be",
@@ -66,29 +66,33 @@ setLoading(false);
   setLoading(false)
 })
 },[])
+
   const extractImages = () => {
     setLoading(true);
+    setFrames([])
+  let referFrames=[];
     const video = videoRef.current;
     const initialTime = video.currentTime;
-    setFrames([])
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
     const endTime = initialTime + 1;
     if (videoRef.current) {
       const interval = setInterval(() => {
-        if (endTime <= video.currentTime) {
+        if (endTime <= video.currentTime|| video.duration === video.currentTime ) {
+          setFrames(referFrames);
           clearInterval(interval);
           setLoading(false);
         } else {
-          const canvas = document.createElement("canvas");
-          const context = canvas.getContext("2d");
-          canvas.width = video.videoWidth;
-          canvas.height = video.videoHeight;
           context.drawImage(video, 0, 0, canvas.width, canvas.height);
           const frame = canvas.toDataURL("image/png");
           let frameObject = { imageFrame: frame,width:canvas.width,height:canvas.height };
-          setFrames((frames) => [...frames, frameObject]);
-          video.currentTime += 0.1;
+          referFrames.push(frameObject)
         }
-      }, 42);
+        video.currentTime += 0.1;
+      }, 10);
     }
   };
   const videoHandler = (key) => {

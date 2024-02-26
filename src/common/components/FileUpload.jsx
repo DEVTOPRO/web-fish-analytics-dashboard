@@ -21,10 +21,16 @@ const useStyles = makeStyles((theme) => ({
     color: '#344357',
     borderRadius: '4px',
   },
+  label:{
+    padding:'0px 10px',
+    fontSize:'16px',
+    fontWeight:"600"
+  }
 }));
 
 export default function DocumentUpload(props) {
   const classes = useStyles();
+  console.log("props",props);
   return (
     <div>
         <div
@@ -36,7 +42,6 @@ export default function DocumentUpload(props) {
           }}
         >
           <div style={{ color: 'black', marginTop:'3px',overflow: 'hidden',maxHeight: '20px' ,wordBreak:'break-all'}}>{props.fileName}</div>
-
           <div>
             <input
               type="file"
@@ -44,18 +49,16 @@ export default function DocumentUpload(props) {
               style={{ display: 'none' }}
               onChange={props.handleChange}
               name={props.name}
-              ref={props.inputRef}
+              // ref={props.inputRef}
               accept={props.accept}
+              {...props.inputRef}
             />
             <label
               htmlFor={props.indexValue + 'contained-file'}
-              style={{ display: 'flex' }}
-            >
-              <div variant="contained">
-                <span>{props.labelContent}</span>
-
+              style={{ display: 'flex',alignItems:'center'}}
+            >           
+                <div  className={classes.label}>{"Uploade the Video file"}</div>
                 <CloudUploadIcon style={{fontSize:"4.2rem",color:"#5a50ab"}} />
-              </div>
             </label>
           </div>
         </div>

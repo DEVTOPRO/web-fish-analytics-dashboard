@@ -6,7 +6,6 @@ import Button from '@mui/material/Button';
 import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
-import { autoPlay } from 'react-swipeable-views-utils';
 
 const AutoPlaySwipeableViews = SwipeableViews;
 
@@ -37,9 +36,13 @@ export default function FrameViewer(props) {
   const [activeStep, setActiveStep] = React.useState(0);
   const maxSteps = props.imageData?props.imageData.length:0;
 
-  const handleNext = () => {
-    props.frameHandler(activeStep+1)
-    setActiveStep((prevActiveStep) => prevActiveStep + 1);
+  const handleNext = (stepData) => {
+    props.frameHandler(stepData+1)
+    if(activeStep==maxSteps-1){
+      setActiveStep(0)
+    }else{
+      setActiveStep((prevActiveStep) => prevActiveStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -81,8 +84,8 @@ export default function FrameViewer(props) {
         nextButton={
           <Button
             size="small"
-            onClick={handleNext}
-            disabled={activeStep === maxSteps - 1}
+            onClick={()=>handleNext(activeStep)}
+            // disabled={activeStep === maxSteps - 1}
           >
             Next
             {theme.direction === 'rtl' ? (
