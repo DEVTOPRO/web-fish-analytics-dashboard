@@ -11,16 +11,16 @@ import Context from "../context/Context";
 import Paper from "@mui/material/Paper";
 import service from "../api/apiSection/service";
 import {recordSourcePath,recordSource} from "../api/apiSection/apiUrlConstent";
-import Loading from "../common/components/Loading";
+import Loading from "../common/components/AppLoading";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
 // "/media/frigate"
 const useStyles = makeStyles((theme) => ({
   videoCards: {
     color: "#4839be",
   },
-  mainRoot: {
-    padding: "20px 0px",
-  },
+    mainRoot: {
+      padding: "4%",
+    },
   backButton: {
     padding: '2% 10px 10px',
     transition: "transform .3s",
@@ -35,6 +35,11 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       transform: "scale(0.85)",
     },
+  },
+  recordLabel:{
+    fontSize:'12px',
+    fontWeight:'600',
+    color:'#191717e6'
   }
 }));
 export default function VideoCollection(props) {
@@ -53,7 +58,7 @@ const [videoSourcePath,setvideoSourcePath]=useState([]);
   };
 useEffect(()=>{
   setLoading(true)
-service.get(`${recordSourcePath}subPath=${contextData.state.path}`).then((respones)=>{
+service.get(`${recordSourcePath}subPath=${contextData.state.path?contextData.state.path:window.getItem("viewPath")}`).then((respones)=>{
 if(respones.data.status=="success"&&respones.data.data){
   setvideoSourcePath(respones.data.data)
   setLoading(false)
@@ -153,7 +158,7 @@ const backHandler=()=>{
                     />{" "}
                   </div>
                 </div>
-                <h6 className="legend">Recording- {data.name}</h6>
+                <p className={classes.recordLabel}>Recording- {data.name}</p>
               </div>
             </div>
           }
@@ -180,6 +185,7 @@ const backHandler=()=>{
       <div className={classes.mainRoot}>
      
         <CardLayout
+        padding={"24px 20px"}
           boxShadow={"inset 0px 0px 10px #00000029"}
           cardContent={
             <div>

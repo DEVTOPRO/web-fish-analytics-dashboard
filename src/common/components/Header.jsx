@@ -143,10 +143,9 @@ const ResponsiveAppBar = (props) => {
       <Container maxWidth="auto">
         <Toolbar disableGutters>
           <Typography
-            variant="h6"
             component="a"
             onClick={() => handleCloseNavMenu('/')}          >
-           <img src={FishIcon} style={{width:'19%'}}/>
+           <img src={FishIcon} style={{width:'18%'}}/>
           </Typography>
           <Box
             sx={{

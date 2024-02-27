@@ -24,6 +24,7 @@ import ErrorMessage from "../common/components/ErrorMessage";
 import { timeOutCaller } from "../utils/utilSub/ArrayMethods";
 import CloseIcon from "@mui/icons-material/Close";
 import ToggleSwitch from "../common/components/ToggleSwitch";
+import Loading from "../common/components/AppLoading";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "3% 10px",
@@ -63,6 +64,7 @@ const customTitleStyle = {
 export default function HomePage(props) {
   const refItem = useRef();
   const classes = useStyles();
+  const [loading,setLoading]=useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [checked, setChecked] = useState(false);
   const [camerasList, setCameraList] = useState([]);
@@ -129,6 +131,7 @@ export default function HomePage(props) {
   };
   return (
     <Box className={classes.root}>
+      <Loading open={loading}/>
       <Cardlayout
         cardContent={
           <div>
@@ -252,7 +255,7 @@ export default function HomePage(props) {
             camerasList={camerasList}
           />
         ) : (
-          <div>{"Preview of "}</div>
+          <div><h2>{"#Waiting for the Loading Infromation . . ."}</h2><br/><br/></div>
         )}
       </div>
     </Box>

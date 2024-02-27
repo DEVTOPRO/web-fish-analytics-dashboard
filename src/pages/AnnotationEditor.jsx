@@ -22,7 +22,7 @@ import { useForm } from 'react-hook-form';
 import Select from "../common/components/Select";
 import { makeStyles } from '@mui/styles';
 import AlertMessage from "../common/components/AlertMessage";
-import { useScreenshot } from "use-react-screenshot";
+import { defaultTimeAndDateFormater } from "../utils/utilSub/Date";
 
 const useStyles = makeStyles(theme => ({
   backButton: {
@@ -31,6 +31,9 @@ const useStyles = makeStyles(theme => ({
     "&:hover": {
       transform: "scale(0.95)",
     },
+  },
+  mainRoot: {
+    padding: "2% 8%",
   },
   root: {
     display: "flex",
@@ -103,8 +106,8 @@ export default function AnnotationEditor(props) {
   const getImage = (data) => {
     console.log(data,"data");
     let sampleObject = {};
-    sampleObject.folderName = "my project";
-    sampleObject.imageName = "cameraname_flex_frame_index";
+    sampleObject.folderName = "My project";
+    sampleObject.imageName = `flexCamera_AnnotatInfo_${defaultTimeAndDateFormater()}`;
     sampleObject.database = "File System";
     sampleObject.width = imageObj.width;
     sampleObject.height = imageObj.height;
@@ -126,7 +129,7 @@ export default function AnnotationEditor(props) {
     });
     console.log(sampleObject,"sampleObject");
     setAnnotateInfo(sampleObject);
-    // setModel(true);
+    setModel(true);
   };
   const onSelect = (selectedId) => console.log(selectedId);
   const onChange = (data) => {
@@ -152,11 +155,13 @@ export default function AnnotationEditor(props) {
   window.onload = (event) => {
     props.Redirectpath("/video-farmes-viewer");
   };
+  if(contextData.state.path){
+  window.sessionStorage.setItem("viewPath",contextData.state.path);
+  }
   
   return (
     <>
-      <div>
-        <div className={classes.backButton}>
+     <div className={classes.backButton}>
           <ActionButton
             buttonText={<><KeyboardArrowLeft /> Back to Frame</>}
             handleSubmit={backHandler}
@@ -164,7 +169,8 @@ export default function AnnotationEditor(props) {
             borderRadius={"10px"}
             width={"fit-content"}
           />
-        </div>{" "}
+        </div>
+      <div className={classes.mainRoot}>       
         <Paper
           sx={{
             alignItems: "center",
@@ -184,7 +190,7 @@ export default function AnnotationEditor(props) {
               )}
             <div style={{ padding: "10px 22px" }}>
               <ActionButton
-                buttonText={"Annotation Editor"}
+                buttonText={"Load Image to Annotation Editor"}
                 handleSubmit={imageAnnotator}
                 backgroundImage={"linear-gradient(45deg, #eee4f8, transparent)"}
                 borderRadius={"10px"}

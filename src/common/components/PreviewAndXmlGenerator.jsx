@@ -5,8 +5,9 @@ import Title from "./Title";
 import ActionButton from "./Button";
 import { makeStyles } from "@mui/styles";
 import service from "../../api/apiSection/service";
-import axios from "axios";
+import AlertMessage from "./AlertMessage";
 import { zipfilePostUpload } from "../../api/apiSection/apiUrlConstent";
+import {timeOutCaller} from "../../utils/utilSub/ArrayMethods";
 const useStyles = makeStyles((theme) => ({
   boundingBox: {
     position: "absolute",
@@ -33,6 +34,7 @@ const useStyles = makeStyles((theme) => ({
 export default function VideoToFrames(props) {
   const canvasFileImage = useRef(null);
   const canvasRef = useRef(null);
+  const [errorMessage,setErrorMessage]=useState(null);
   const classes = useStyles();
   let sampleImg =
     "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60";
@@ -80,8 +82,8 @@ export default function VideoToFrames(props) {
             data.strokeWidth,
             data.strokeHeight
           );
-          context2.strokeStyle = "red";
-          context2.lineWidth = 2;
+          context2.strokeStyle = "green";
+          context2.lineWidth = 3;
           context2.stroke();
         });
     };
@@ -90,7 +92,7 @@ export default function VideoToFrames(props) {
   const subXmlGenrator = (subAnnainfo) => {
     return `\t<object> 
      \t\t<name>${subAnnainfo.annotateName}</name> 
-     \t\t<pose>Unspecified</pose> 
+     \t\t<pose>0</pose> 
      \t\t<truncated>0</truncated> 
      \t\t<difficult>0</difficult> 
      \t\t<bndbox> 
@@ -106,15 +108,16 @@ export default function VideoToFrames(props) {
     const zip = new JSZip();
     let annotateInfo = props.annotateInfo;
     if (annotateInfo && Object.keys(annotateInfo).length > 0) {
-      const imageData = annotateInfo.imageString.split(",")[1];
+      // const imageData = annotateInfo.imageString.split(",")[1];
       // zip.file(`${annotateInfo.imageName}.png`, imageData, { base64: true });
       zip.file(
-        `Preview_${annotateInfo.imageName}.png`,
+        `PreviewAnnotation.png`,
         previewImage.split("base64,")[1],
         { base64: true }
       );
       // Generate XML for annotation
-      let xmlString = `<?xml version="1.0" encoding="UTF-8"?> <annotation> 
+      let xmlString = `<?xml version="1.0" encoding="UTF-8"?>
+     <annotation> 
      \t<folder>${annotateInfo.folderName}</folder> 
      \t<filename>${annotateInfo.imageName}</filename> 
      \t<path>/${annotateInfo.folderName}/${annotateInfo.imageName}.png</path> 
@@ -128,17 +131,13 @@ export default function VideoToFrames(props) {
      \t</size> 
      ${annotateInfo.coordiants && annotateInfo.coordiants.length > 0 && annotateInfo.coordiants.map((subAnaInfo) => subXmlGenrator(subAnaInfo))}\n
      </annotation>`;
-      zip.file(`${annotateInfo.imageName}.xml`, xmlString);
+      zip.file(`Annotation.xml`, xmlString);
     } else {
       console.log("There is no annation");
+      setErrorMessage({message:"Error At creation of XML creation, Please contact with admin team",status:"error"});
     }
-
     zip
-      .generateAsync({
-        type: "blob",
-        compression: "DEFLATE",
-        compressionOptions: { level: 9 },
-      })
+      .generateAsync({type: "blob"})
       .then((content) => {
         if(key==="download"){
           saveAs(content,`${annotateInfo.imageName}.zip`);
@@ -147,25 +146,30 @@ export default function VideoToFrames(props) {
         formData.append("files", content, `${annotateInfo.imageName}.zip`, {
           contentType: "application/zip",
         });
-        formData.append("userId", "Ram");
-
+        formData.append("userId", "Team3");
         service
           .create(zipfilePostUpload, formData)
           .then((respones) => {
             if (respones.data.status === "success") {
               alert("Data loaded successfully");
+              setErrorMessage({message:"Successful information is submitted to Traning tool",status:"success"});
             } else {
-              alert("Data loaded failed");
+              setErrorMessage({message:"Technical Error",status:"error"});
             }
           })
           .catch((e) => {
             console.log("Please contact to admin team");
+            setErrorMessage({message:"Technical Error, Please Contact with admin team",status:"error"});
+
           });
         }
       })
       .catch((e) => {
         console.log("Check");
+      setErrorMessage({message:"Error At creation of Zip creation, Please contact with admin team",status:"error"});
+
       });
+      timeOutCaller(setErrorMessage,5000);
   };
   const getImage = (key) => {
     const canvases = canvasFileImage.current;
@@ -181,6 +185,7 @@ export default function VideoToFrames(props) {
 
   return (
     <div>
+      {errorMessage&&<AlertMessage message={errorMessage.message} status={errorMessage.status}/>}
       <div style={{ padding: "2%" }}>
         <canvas ref={canvasRef} width={920} height={720}>
           Your browser does not support the HTML5 canvas tag.

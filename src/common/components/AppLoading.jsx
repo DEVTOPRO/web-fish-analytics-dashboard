@@ -13,7 +13,9 @@ export default function SimpleBackdrop(props) {
   return (
     <div>
       <Backdrop  sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 3 }} open={props.open}>
-        <CircularProgress color="inherit" size={60}/>
+        {/* <CircularProgress color="inherit" size={60}/>
+         */}
+         <img src={AnimationImg} width={"22%"}/>
       </Backdrop>
     </div>
   );

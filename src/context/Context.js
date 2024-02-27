@@ -6,7 +6,6 @@ export const consumer=Context.Consumer;
 
 
 function reducer(state, action) {
-	state={loading: false, isAuthorized: false, userData: {}};
 	state[`${action.type}`] = action.value;
     return {...state};
   }

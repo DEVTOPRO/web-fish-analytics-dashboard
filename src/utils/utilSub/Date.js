@@ -78,3 +78,9 @@ export const defaultChangeFormater = dateInput => {
   converterDate = [date[1], date[0], date[2]].join('/'); //mm/dd/yyyy
   return converterDate;
 };
+
+export const defaultTimeAndDateFormater = () => {
+  let eventDate = new Date();
+  let regex = /[,\s;:]+/;
+  return  eventDate.toLocaleString().split(regex).join("");
+};
