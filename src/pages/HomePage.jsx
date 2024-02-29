@@ -25,6 +25,7 @@ import { timeOutCaller } from "../utils/utilSub/ArrayMethods";
 import CloseIcon from "@mui/icons-material/Close";
 import ToggleSwitch from "../common/components/ToggleSwitch";
 import Loading from "../common/components/AppLoading";
+import VideoTool from "./ToolVideos";
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "3% 10px",
@@ -69,7 +70,7 @@ export default function HomePage(props) {
   const [checked, setChecked] = useState(false);
   const [camerasList, setCameraList] = useState([]);
   const [recordInfo, setRecordInfo] = useState([]);
-  const [fileData, setFileData] = useState(null);
+  const [fileData, setFileData] = useState({isActive:false});
   const {
     register,
     control,
@@ -94,12 +95,16 @@ export default function HomePage(props) {
       .catch((e) => alert("Please contact to Research Team"));
   }, []);
 
-  const fileHandler = (e) => {
-    console.log(e.target.files[0]);
-    setFileData(e.target.files[0].name);
+  const fileHandler = (e,key) => {
+    if(key==="cancle"){
+      setFileData({isActive:false})
+    }else{
+      let videoFileInfo={name:e.target.files[0].name,fileData: URL.createObjectURL(e.target.files[0])};
+    setFileData(pre=>({...pre,...videoFileInfo}));
+    }
+    
   };
   const getVidoeInfo = (data) => {
-    console.log("data", data);
     if (!checked) {
       service
         .get(`${recordingInfo}cameraName=${data.cameraName}`)
@@ -119,7 +124,8 @@ export default function HomePage(props) {
         })
         .catch((e) => alert("Please contact to Research Team"));
     } else {
-      alert("Working inprogress");
+      fileData.isActive=true;
+      setFileData(fileData);
     }
     timeOutCaller(setErrorMessage, 5000);
   };
@@ -129,6 +135,7 @@ export default function HomePage(props) {
   const switchHandler = (event) => {
     setChecked(event.target.checked);
   };
+  console.log("fileData",fileData);
   return (
     <Box className={classes.root}>
       <Loading open={loading}/>
@@ -162,7 +169,7 @@ export default function HomePage(props) {
                   >
                     <FileUpload
                       handleChange={fileHandler}
-                      fileInfo={fileData}
+                      fileInfo={fileData&&fileData.name}
                     />
                     <div>
                       {errors &&
@@ -174,13 +181,13 @@ export default function HomePage(props) {
                   </Grid>
                   <div className={classes.seprateStyle}>
                     {" "}
-                    {fileData && (
+                    {fileData &&fileData.name&& (
                       <Cardlayout
                         width={"300px"}
                         cardContent={
                           <div className={classes.fileCard}>
-                            <div>{fileData}</div>
-                            <CloseIcon />
+                            <div>{fileData.name}</div>
+                            <CloseIcon onClick={(e)=>fileHandler(e,"cancle")}/>
                           </div>
                         }
                       />
@@ -247,17 +254,21 @@ export default function HomePage(props) {
           </div>
         }
       />
+      {checked&&fileData&&fileData.isActive?
+      <div>
+      <VideoTool  keyValue={true} Redirectpath={props.Redirectpath} videoData={fileData} />
+      </div>: 
       <div className={classes.tableRoot}>
-        {recordInfo && recordInfo.length > 0 ? (
-          <CommonTable
-            redirectPage={RedirectHandler}
-            data={recordInfo}
-            camerasList={camerasList}
-          />
-        ) : (
-          <div><h2>{"#Waiting for the Loading Infromation . . ."}</h2><br/><br/></div>
-        )}
-      </div>
+      {recordInfo && recordInfo.length > 0 ? (
+        <CommonTable
+          redirectPage={RedirectHandler}
+          data={recordInfo}
+          camerasList={camerasList}
+        />
+      ) : (
+        <div><h2>{"#Waiting for the Loading Infromation . . ."}</h2><br/><br/></div>
+      )}
+    </div>}
     </Box>
   );
 }
