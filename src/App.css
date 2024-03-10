@@ -65,3 +65,6 @@ option:checked {
   background-color: #fb2929;
 }
 
+:root {
+  --canvas-stroke-color: #fb2929; /* Default stroke color */
+}

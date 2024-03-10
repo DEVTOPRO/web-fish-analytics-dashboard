@@ -40,7 +40,7 @@ export const duplicateRemove=(data,referArr)=>{
 export const getNonDuplicatesComapny=(data,referInd)=>{
 let nonDuplicate=[];
 referInd.length>0&&referInd.map((valData)=>{
-  nonDuplicate.push(data.find((val)=>val.id!==valData.id))
+  nonDuplicate.push(data.find((val)=>val.id==valData.id))
 });
 let finalArray=nonDuplicate.length>0?[...new Set(nonDuplicate)]:[];
 return finalArray
@@ -82,3 +82,7 @@ export const timeOutCaller=(stateFunction,time)=>{
     stateFunction(null)
   },time?time:2500)
 } 
+
+export const randomColor = () => {
+  return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+};

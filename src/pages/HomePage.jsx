@@ -11,7 +11,7 @@ import Select from "../common/components/Select";
 import Label from "../common/components/label";
 import { makeStyles } from "@mui/styles";
 import Title from "../common/components/Title";
-import { getCurrentDateToDisplay } from "../utils/utilSub/Date";
+import { getCurrentDateToDisplay,before30DayDate } from "../utils/utilSub/Date";
 import { Box, Grid } from "@mui/material";
 import ActionButton from "../common/components/Button";
 import CommonTable from "../common/components/CustomCommonTable";
@@ -219,6 +219,7 @@ export default function HomePage(props) {
                       type={"date"}
                       inputRef={register("startDate", {})}
                       max={getCurrentDateToDisplay()}
+                      min={before30DayDate()}
                     />
                   </Grid>
                   <Grid item xs={12} sm={12} md={4} lg={4} xl={4}>
@@ -228,6 +229,7 @@ export default function HomePage(props) {
                       type={"date"}
                       inputRef={register("endDate", {})}
                       max={getCurrentDateToDisplay()}
+                      min={before30DayDate()}
                     />
                   </Grid>
                 </>

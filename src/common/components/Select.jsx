@@ -77,7 +77,7 @@ export default function CustomSelect(props) {
   return (
     <fieldset style={{
       fontFamily: 'Helvetica',
-      border:"1px solid #c4c4c4",
+      border:props.colorCode?`1px solid${props.colorCode}`:"1px solid #c4c4c4",
       maxheight: '75px',
       minheight: '38px',
       width: '97%',
@@ -99,9 +99,9 @@ export default function CustomSelect(props) {
         }
         id={props.id}
         disabled={props.disabled}
-        onChange={props.handleChange}
         value={props.value}
         {...props.inputRef}
+        onChange={props.handleChange}
       >
         <option value="">Select
         </option>
