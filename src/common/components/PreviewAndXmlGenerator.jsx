@@ -9,6 +9,7 @@ import AlertMessage from "./AlertMessage";
 import { zipfilePostUpload } from "../../api/apiSection/apiUrlConstent";
 import {timeOutCaller} from "../../utils/utilSub/ArrayMethods";
 import {defaultTimeAndDateFormater}  from "../../utils/utilSub/Date";
+import {uniqueDatasetFilter} from "../../utils/utilSub/ArrayMethods";
 import Loading from "./Loading";
 import "../../App.css"
 const useStyles = makeStyles((theme) => ({
@@ -101,7 +102,7 @@ export default function VideoToFrames(props) {
 
   const subXmlGenrator = (subAnnainfo) => {
     return( `\t<object> 
-     \t\t<name>${subAnnainfo.annotateName}</name> 
+     \t\t<name>${subAnnainfo.comment}</name> 
      \t\t<pose>0</pose> 
      \t\t<truncated>0</truncated> 
      \t\t<difficult>0</difficult> 
@@ -114,13 +115,14 @@ export default function VideoToFrames(props) {
     \t</object>\n` )
   };
   const createZip = (key) => {
-    setLoading(true);
+    // setLoading(true);
     let annotateInfo = props.annotateInfo;
     if (annotateInfo && Object.keys(annotateInfo).length > 0) {
       let imageBinaryData = atob(annotateInfo.imageString.split(',')[1]);
-      let imageBlob = new Blob([imageBinaryData], { type: 'image/png' });
+      let imageBlob = new Blob([imageBinaryData], { type: 'image/png' }); 
       // Generate XML from  annotation
-   annotateInfo.coordiants && annotateInfo.coordiants.length > 0 && [...new Set(annotateInfo.speciesType)].map((typeOfSpecie,index)=>{
+    
+   annotateInfo.coordiants && annotateInfo.coordiants.length > 0 &&uniqueDatasetFilter(annotateInfo.speciesType,"value").map((typeOfSpecie,index)=>{
     let xmlStringInfo = `<?xml version="1.0" encoding="UTF-8"?>
      <annotation> 
      \t<folder>${annotateInfo.folderName}</folder> 
@@ -134,7 +136,7 @@ export default function VideoToFrames(props) {
      \t\t<height>${annotateInfo.height}</height> 
      \t\t<depth>${annotateInfo.depth}</depth> 
      \t</size> 
-       ${annotateInfo.coordiants.map((subAnnainfo)=>(subAnnainfo.annotateName==typeOfSpecie?subXmlGenrator(subAnnainfo):null)).join(" ")}\n
+       ${annotateInfo.coordiants.map((subAnnainfo)=>(subAnnainfo.comment==typeOfSpecie.value?subXmlGenrator(subAnnainfo):null)).join(" ")}\n
     </annotation>`
     console.log("xmlString",xmlStringInfo);
     let uniqueFileName=`mediaXmlFile_${defaultTimeAndDateFormater()}_${index}`;
@@ -143,12 +145,13 @@ export default function VideoToFrames(props) {
       userId: "Ram",
       xmlName: uniqueFileName,
       mediaFileName: uniqueFileName,
-      speciesType: typeOfSpecie,
+      speciesType: typeOfSpecie.value,
     };
     const formData = new FormData();
     formData.append("mediaFile", imageBlob, `${uniqueFileName}.png`); // File object
     formData.append("xmlFile", sourceXmlBlob, `${uniqueFileName}.xml`); // File object
     formData.append("sampleFileDto", new Blob([JSON.stringify(jsonPayload)], { type: "application/json" }));
+    console.log("formDate",formData)
     service
       .create(zipfilePostUpload, formData)
       .then((respones) => {
@@ -169,12 +172,13 @@ export default function VideoToFrames(props) {
         setLoading(false);
       });
   });   
-
+      
     } else {
       console.log("There is no annation");
       setErrorMessage({message:"Error At creation of XML creation, Please contact with admin team",status:"error"});
     }
       timeOutCaller(setErrorMessage,5000);
+  
   };
   const getImage = (key) => {
     const canvases = canvasFileImage.current;

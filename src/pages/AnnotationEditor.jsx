@@ -17,13 +17,13 @@ import PreviewAndXmlGenerator from "../common/components/PreviewAndXmlGenerator"
 import Label from "../common/components/label";
 import CustomModel from "../common/components/modal";
 import KeyboardArrowLeft from "@mui/icons-material/KeyboardArrowLeft";
-
+import IconButton from '@mui/material/IconButton';
 import { useForm } from "react-hook-form";
 import Select from "../common/components/Select";
 import { makeStyles } from "@mui/styles";
 import AlertMessage from "../common/components/AlertMessage";
 import { defaultTimeAndDateFormater } from "../utils/utilSub/Date";
-
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 const useStyles = makeStyles((theme) => ({
   backButton: {
     padding: "2% 10px 10px",
@@ -45,6 +45,10 @@ const useStyles = makeStyles((theme) => ({
   submitButton: {
     padding: "10px 0px",
   },
+  annotationInput:{
+    display:'flex',
+    justifyContent:"space-between"
+  }
 }));
 export default function AnnotationEditor(props) {
   let colorLabel = [
@@ -122,8 +126,8 @@ export default function AnnotationEditor(props) {
   const [fieldSize, setFieldSize] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
   const [annotationColor, setAnnotationColor] = useState([]);
-
-
+  const [selectId,setSelectId]=useState("");
+  const [fieldInfo,setFieldInfo]=useState([]);
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
@@ -152,7 +156,7 @@ export default function AnnotationEditor(props) {
     sampleObject.height = imageObj.height;
     sampleObject.imageString = imageObj.imageFrame;
     sampleObject.depth = 3;
-    sampleObject.speciesType=[]
+    sampleObject.speciesType=fieldInfo
     sampleObject.coordiants = annotations.map((annotateData, index) => {
       let coordiants = {};
       coordiants.xMax = Math.round(
@@ -168,32 +172,48 @@ export default function AnnotationEditor(props) {
       coordiants.pose = data.pose;
       coordiants.diffcult = data.difficult;
       coordiants.truncated = data.truncated;
-      coordiants.annotateName = data[`fishType${index}`];
       coordiants.comment = annotateData.comment
         ? annotateData.comment
-        : data[`fishType${index}`];
-      sampleObject.speciesType.push(data[`fishType${index}`])
+        : "No Info";
       return coordiants;
     });
     console.log(sampleObject, " sampleObject ");
     setAnnotateInfo(sampleObject);
     setModel(true);
   };
-  const onSelect = (selectedId) => {
-    console.log(selectedId);
+  const onSelect = (fieldId) => {
+    console.log("fielID",fieldId);
+    setSelectId(fieldId);
   };
-  var commentData;
-  const handleChangeData=(e)=>{
-    console.log("select fiel")
-    }
+  const handleChangeData=(e,id)=>{
+    let refFields=[...fieldInfo];
+if(refFields&&refFields.length>0){
+  let removeIndex=refFields.findIndex((fieldVal)=>fieldVal.id==selectId);
+ if(removeIndex>-1){
+  refFields.splice(removeIndex,1,{value:e.target.value,id:selectId})
+ }else{
+  refFields.push({value:e.target.value,id:selectId});
+ }
+ }
+else{
+  refFields.push({value:e.target.value,id:selectId});
+}
+    setFieldInfo(refFields);
+  }
   const onChange = (data) => {
-    let referDump = [...annotations];
-  let refeColorDump=[...fieldSize];
     let arrayId = [];
+    console.log(data,"annotations info");
+    console.log(fieldInfo,"fieldInfo")
+
     setColorCode(data.length);
     if (fieldSize.length == data.length) {
       let updateInfo = [];
-      referDump.map((subVal) => {
+      data&& data.length > 0 && data.map((subVal,index) => {
+       let commentData=fieldInfo&&fieldInfo.length>0?fieldInfo.find((commentInfo)=>subVal.id==commentInfo.id):{value:"test"};
+       subVal.comment=commentData?commentData.value:"test"
+       return subVal;
+      });
+      fieldSize.map((subVal) => {
         updateInfo.push(data.find((updateData) => updateData.id == subVal.id));
       });
       setAnnotations(updateInfo);
@@ -201,7 +221,8 @@ export default function AnnotationEditor(props) {
       data &&
         data.length > 0 &&
         data.map((val,index) => {
-          val.comment=commentData?commentData:"adfasf"
+        let commentData=fieldInfo&&fieldInfo.length>0?fieldInfo.find((commentInfo)=>val.id==commentInfo.id):{value:"test"};
+         val.comment=commentData?commentData.value:"test"
           if (
             val &&
             val.mark.x > 0 &&
@@ -214,11 +235,7 @@ export default function AnnotationEditor(props) {
           } else {
             setErrorMessage("Please Annontate the within image range");
           }
-          if(refeColorDump.length>1&& refeColorDump.length>data.length){
-            refeColorDump.map((colorData)=>colorData.id==val.id&&arrayId.push({id:val.id,colorCode:colorData.colorCode}))
-          }else{
           arrayId.push({id:val.id,colorCode:colorLabel[index].code});
-          }
         });
       setFieldSize(arrayId);
     }
@@ -331,7 +348,7 @@ export default function AnnotationEditor(props) {
                     }
                     inputElement={(value,onChange,onDelete)=>{
                       return(
-                    <>
+                    <div className={classes.annotationInput}>
                        <Select
                             displayValue="name"
                             keyValue="value"
@@ -339,8 +356,8 @@ export default function AnnotationEditor(props) {
                             handleChange={(e)=>handleChangeData(e)}
                             inputRef={register(`fishType${fieldSize.length}`, {})}
                           />
-                          <button onClick={()=>onDelete()}>{"Delet"}</button>
-                    </>)
+                           <IconButton onClick={()=>onDelete()}><DeleteOutlineIcon/></IconButton>
+                    </div>)
                     }}
                     scrollSpeed={0}
                     onSelect={onSelect}
@@ -362,21 +379,6 @@ export default function AnnotationEditor(props) {
                   >
                     {"Additional Information"}
                   </Box>
-                  {fieldSize.length > 0 &&
-                    fieldSize.map((field, index) => {
-                      return (
-                        <>
-                          <Label labelName={`Name of Fish${index + 1}*`} />
-                          <Select
-                            displayValue="name"
-                            keyValue="value"
-                            handleChange={(e)=>handleChangeData(e)}
-                            listItems={typeOfSpecies}
-                            inputRef={register(`fishType${index}`, {})}
-                          />
-                        </>
-                      );
-                    })}
                   <Label labelName={"Pose *"} />
                   <Input
                     name="pose"

@@ -90,6 +90,5 @@ todayDate.setDate(new Date().getDate() - 30);
 let day = todayDate.getDate();
 let month = todayDate.getMonth() + 1;
 let year = todayDate.getFullYear();
-console.log("data", `${year}-${month}-${day}`)
 return `${year}-${ month < 10 ? '0' + month : month }-${day<10? '0' + day : '0' + day }`
 }
