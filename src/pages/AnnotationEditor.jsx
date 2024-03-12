@@ -24,6 +24,7 @@ import { makeStyles } from "@mui/styles";
 import AlertMessage from "../common/components/AlertMessage";
 import { defaultTimeAndDateFormater } from "../utils/utilSub/Date";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import CheckBox from "../common/components/CheckBox"
 const useStyles = makeStyles((theme) => ({
   backButton: {
     padding: "2% 10px 10px",
@@ -93,12 +94,6 @@ export default function AnnotationEditor(props) {
       code: "#000000",
     },
   ];
-  const classes = useStyles();
-  const canvasRef = useRef(null);
-  const imageRef = useRef(null);
-  const contextData = useContext(Context);
-  const [annotations, setAnnotations] = React.useState([]);
-  const [colorCode, setColorCode] = useState(0);
   const {
     register,
     control,
@@ -109,6 +104,13 @@ export default function AnnotationEditor(props) {
     setValue,
     getValues,
   } = useForm();
+  const classes = useStyles();
+  const canvasRef = useRef(null);
+  const imageRef = useRef(null);
+  const contextData = useContext(Context);
+  const [annotations, setAnnotations] = React.useState([]);
+  const [colorCode, setColorCode] = useState(0);
+ 
   const [typeOfSpecies, setTypeOfSpecies] = useState([
     { name: "Salmon ", value: "salmon " },
     { name: "Trout", value: "trout" },
@@ -125,7 +127,7 @@ export default function AnnotationEditor(props) {
   const [model, setModel] = useState(false);
   const [fieldSize, setFieldSize] = useState([]);
   const [errorMessage, setErrorMessage] = useState(null);
-  const [annotationColor, setAnnotationColor] = useState([]);
+  const [isChecked, setChecked] = useState(false);
   const [selectId,setSelectId]=useState("");
   const [fieldInfo,setFieldInfo]=useState([]);
   const imageAnnotator = () => {
@@ -148,6 +150,7 @@ export default function AnnotationEditor(props) {
   const getImage = (data) => {
     console.log(data, "data");
     console.log("Final Data",annotations);
+    if(isChecked){
     let sampleObject = {};
     sampleObject.folderName = "My project";
     sampleObject.imageName = `flexCamera_AnnotatInfo_${defaultTimeAndDateFormater()}`;
@@ -180,6 +183,9 @@ export default function AnnotationEditor(props) {
     console.log(sampleObject, " sampleObject ");
     setAnnotateInfo(sampleObject);
     setModel(true);
+  }else{
+    setErrorMessage("All fields are manadatory");
+  }
   };
   const onSelect = (fieldId) => {
     console.log("fielID",fieldId);
@@ -249,7 +255,9 @@ else{
   if (contextData.state.path) {
     window.sessionStorage.setItem("viewPath", contextData.state.path);
   }
-
+  const checkBoxHandler=()=>{
+    setChecked(pre=>!pre);
+  }
   let defaultShapeStyle = {
     /** text area **/
     padding: 5, // text padding
@@ -403,6 +411,14 @@ else{
                     })}
                     type="text"
                   />
+                <CheckBox   
+                   name={"isAnnotation"}
+                   handleChange={checkBoxHandler}
+                   checked={isChecked}
+                   fontSizeLabel={"12px"}
+                   fontWeight={700}
+                  label={"* Label an all annotations"}
+                    />
                   <div className={classes.submitButton}>
                     <ActionButton
                       buttonText={"Submit XMl"}
