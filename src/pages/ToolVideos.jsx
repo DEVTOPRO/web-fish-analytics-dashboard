@@ -198,7 +198,7 @@ export default function VideoCollection(props) {
   return (
     <div>
       <Loading open={loading} />
-      <div className={classes.backButton}>
+      <div className={classes.backButton} style={{display:props.keyValue?"none":"block"}}>
         <ActionButton
           buttonText={
             <>

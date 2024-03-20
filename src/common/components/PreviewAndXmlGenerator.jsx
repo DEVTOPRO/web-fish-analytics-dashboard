@@ -121,7 +121,6 @@ export default function VideoToFrames(props) {
       let imageBinaryData = atob(annotateInfo.imageString.split(',')[1]);
       let imageBlob = new Blob([imageBinaryData], { type: 'image/png' }); 
       // Generate XML from  annotation
-    
    annotateInfo.coordiants && annotateInfo.coordiants.length > 0 &&uniqueDatasetFilter(annotateInfo.speciesType,"value").map((typeOfSpecie,index)=>{
     let xmlStringInfo = `<?xml version="1.0" encoding="UTF-8"?>
      <annotation> 
@@ -147,6 +146,7 @@ export default function VideoToFrames(props) {
       mediaFileName: uniqueFileName,
       speciesType: typeOfSpecie.value,
     };
+    console.log("Request Json",jsonPayload);
     const formData = new FormData();
     formData.append("mediaFile", imageBlob, `${uniqueFileName}.png`); // File object
     formData.append("xmlFile", sourceXmlBlob, `${uniqueFileName}.xml`); // File object

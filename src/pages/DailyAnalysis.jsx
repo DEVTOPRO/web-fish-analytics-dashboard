@@ -32,36 +32,15 @@ export default function DailyAnalysis(props){
         console.log("file data",e.target.files[0]);
         setFileData(pre=>[...pre,e.target.files[0]])
     }
-    const submitHandler=()=>{
-        const jsonPayload = {
-            userId: "Ram",
-            xmlName: "mediaXmlFile",
-            mediaFileName: "mediaXmlFile",
-            speciesType:"salman"
-        };
-const formData = new FormData();
-formData.append('mediaFile', fileData[0],"mediaFile.png"); // File object
-formData.append('xmlFile', fileData[1],"xmlFile.xml"); // File object
-formData.append('sampleFileDto', new Blob([JSON.stringify(jsonPayload)], { type: 'application/json' }));
-
-axios.post("http://localhost:8090/fileRepoInformation/zipFileUpload", formData).then((res) => {
-    console.log("Response:", res.data);
-}).catch((error) => {
-  
-    })
-}
     return (
         <div className={classes.root}>
 
             <div>
                 <AutoModeIcon sx={{fontSize:"7rem",color:"rgba(187,238,174,1)"}}/>
             </div>
-        <h1>
-      Universeral  Analytical Home page is Under Planning for MVP-2
-            </h1>
-
-            <input type={'file'} onChange={fileHandler}/>
-            <button onClick={submitHandler}>submit</button>
+          <h1>
+         Universeral  Analytical Home page is Under Planning for MVP-2
+        </h1>
         </div>
     )
 }

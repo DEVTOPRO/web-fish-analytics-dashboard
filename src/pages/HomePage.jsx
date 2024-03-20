@@ -26,6 +26,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import ToggleSwitch from "../common/components/ToggleSwitch";
 import Loading from "../common/components/AppLoading";
 import VideoTool from "./ToolVideos";
+import Tooltip from '@mui/material/Tooltip';
 const useStyles = makeStyles((theme) => ({
   root: {
     padding: "3% 10px",
@@ -99,6 +100,7 @@ export default function HomePage(props) {
     if(key==="cancle"){
       setFileData({isActive:false})
     }else{
+      console.log("fieldata",e,key)
       let videoFileInfo={name:e.target.files[0].name,fileData: URL.createObjectURL(e.target.files[0])};
     setFileData(pre=>({...pre,...videoFileInfo}));
     }
@@ -124,8 +126,10 @@ export default function HomePage(props) {
         })
         .catch((e) => alert("Please contact to Research Team"));
     } else {
-      fileData.isActive=true;
+      if(fileData&&fileData.name!=null){
+       fileData.isActive=true;
       setFileData(fileData);
+      }
     }
     timeOutCaller(setErrorMessage, 5000);
   };
@@ -147,7 +151,9 @@ export default function HomePage(props) {
                 title="Welcome to Anotation analyer from stream from frigate Information"
                 style={customTitleStyle}
               />
+              <Tooltip title="Upload Your Clip" placement="bottom">
               <ToggleSwitch onChange={switchHandler} />
+              </Tooltip>
             </div>
             {errorMessage && (
               <AlertMessage

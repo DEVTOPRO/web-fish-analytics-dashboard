@@ -24,7 +24,8 @@ import { makeStyles } from "@mui/styles";
 import AlertMessage from "../common/components/AlertMessage";
 import { defaultTimeAndDateFormater } from "../utils/utilSub/Date";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import CheckBox from "../common/components/CheckBox"
+import CheckBox from "../common/components/CheckBox";
+import {colorCodes} from "../utils/utilSub/localization";
 const useStyles = makeStyles((theme) => ({
   backButton: {
     padding: "2% 10px 10px",
@@ -52,48 +53,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 export default function AnnotationEditor(props) {
-  let colorLabel = [
-    {
-      name: "Red",
-      code: "#FF0000",
-    },
-    {
-      name: "Green",
-      code: "#00FF00",
-    },
-    {
-      name: "Blue",
-      code: "#0000FF",
-    },
-    {
-      name: "Yellow",
-      code: "#FFFF00",
-    },
-    {
-      name: "Orange",
-      code: "#FFA500",
-    },
-    {
-      name: "Purple",
-      code: "#800080",
-    },
-    {
-      name: "Pink",
-      code: "#FFC0CB",
-    },
-    {
-      name: "Cyan",
-      code: "#00FFFF",
-    },
-    {
-      name: "Brown",
-      code: "#A52A2A",
-    },
-    {
-      name: "Black",
-      code: "#000000",
-    },
-  ];
+  let colorLabel = colorCodes;  
   const {
     register,
     control,
@@ -110,13 +70,104 @@ export default function AnnotationEditor(props) {
   const contextData = useContext(Context);
   const [annotations, setAnnotations] = React.useState([]);
   const [colorCode, setColorCode] = useState(0);
- 
   const [typeOfSpecies, setTypeOfSpecies] = useState([
-    { name: "Salmon ", value: "salmon " },
-    { name: "Trout", value: "trout" },
-    { name: "Walleye", value: "walleye" },
-    { name: "Yellow Perch", value: "yellow perch" },
-  ]);
+      { "name": "Salmon", "value": "salmon" },
+      { "name": "Trout", "value": "trout" },
+      { "name": "Walleye", "value": "walleye" },
+      { "name": "Yellow Perch", "value": "yellow perch" },
+      { "name": "Barramundi", "value": "barramundi" },
+      { "name": "Bluegill", "value": "bluegill" },
+      { "name": "Catfish", "value": "catfish" },
+      { "name": "Chinook Salmon", "value": "chinook salmon" },
+      { "name": "Coho Salmon", "value": "coho salmon" },
+      { "name": "Dolphinfish", "value": "dolphinfish" },
+      { "name": "Eel", "value": "eel" },
+      { "name": "Flounder", "value": "flounder" },
+      { "name": "Grouper", "value": "grouper" },
+      { "name": "Halibut", "value": "halibut" },
+      { "name": "Herring", "value": "herring" },
+      { "name": "Mackerel", "value": "mackerel" },
+      { "name": "Mahi Mahi", "value": "mahi mahi" },
+      { "name": "Marlin", "value": "marlin" },
+      { "name": "Perch", "value": "perch" },
+      { "name": "Pike", "value": "pike" },
+      { "name": "Redfish", "value": "redfish" },
+      { "name": "Sablefish", "value": "sablefish" },
+      { "name": "Sardine", "value": "sardine" },
+      { "name": "Swordfish", "value": "swordfish" },
+      { "name": "Tilapia", "value": "tilapia" },
+      { "name": "Tuna", "value": "tuna" },
+      { "name": "Wahoo", "value": "wahoo" },
+      { "name": "Yellowtail", "value": "yellowtail" },
+      { "name": "Bream", "value": "bream" },
+      { "name": "Carp", "value": "carp" },
+      { "name": "Cod", "value": "cod" },
+      { "name": "Dory", "value": "dory" },
+      { "name": "Gar", "value": "gar" },
+      { "name": "Goby", "value": "goby" },
+      { "name": "Mullet", "value": "mullet" },
+      { "name": "Piranha", "value": "piranha" },
+      { "name": "Rudd", "value": "rudd" },
+      { "name": "Scup", "value": "scup" },
+      { "name": "Shad", "value": "shad" },
+      { "name": "Sheepshead", "value": "sheepshead" },
+      { "name": "Tautog", "value": "tautog" },
+      { "name": "Tilefish", "value": "tilefish" },
+      { "name": "Triggerfish", "value": "triggerfish" },
+      { "name": "Wrasse", "value": "wrasse" },
+      { "name": "Alewife", "value": "alewife" },
+      { "name": "Anchovy", "value": "anchovy" },
+      { "name": "Barracuda", "value": "barracuda" },
+      { "name": "Bluefish", "value": "bluefish" },
+      { "name": "Buffalo Fish", "value": "buffalo fish" },
+      { "name": "Butterfish", "value": "butterfish" },
+      { "name": "Chub", "value": "chub" },
+      { "name": "Cobia", "value": "cobia" },
+      { "name": "Crappie", "value": "crappie" },
+      { "name": "Dab", "value": "dab" },
+      { "name": "Dace", "value": "dace" },
+      { "name": "Dartfish", "value": "dartfish" },
+      { "name": "Dogfish", "value": "dogfish" },
+      { "name": "Drum", "value": "drum" },
+      { "name": "Grunion", "value": "grunion" },
+      { "name": "Gudgeon", "value": "gudgeon" },
+      { "name": "Haddock", "value": "haddock" },
+      { "name": "Hake", "value": "hake" },
+      { "name": "Hoki", "value": "hoki" },
+      { "name": "Jackfish", "value": "jackfish" },
+      { "name": "Jewfish", "value": "jewfish" },
+      { "name": "John Dory", "value": "john dory" },
+      { "name": "Lingcod", "value": "lingcod" },
+      { "name": "Lizardfish", "value": "lizardfish" },
+      { "name": "Mandarin Fish", "value": "mandarin fish" },
+      { "name": "Menhaden", "value": "menhaden" },
+      { "name": "Monkfish", "value": "monkfish" },
+      { "name": "Opah", "value": "opah" },
+      { "name": "Orange Roughy", "value": "orange roughy" },
+      { "name": "Parrotfish", "value": "parrotfish" },
+      { "name": "Pomfret", "value": "pomfret" },
+      { "name": "Rainbow Trout", "value": "rainbow trout" },
+      { "name": "Ribbonfish", "value": "ribbonfish" },
+      { "name": "Rockfish", "value": "rockfish" },
+      { "name": "Rosefish", "value": "rosefish" },
+      { "name": "Ruffe", "value": "ruffe" },
+      { "name": "Sailfish", "value": "sailfish" },
+      { "name": "Sauger", "value": "sauger" },
+      { "name": "Scorpionfish", "value": "scorpionfish" },
+      { "name": "Silverside", "value": "silverside" },
+      { "name": "Sole", "value": "sole" },
+      { "name": "Sturgeon", "value": "sturgeon" },
+      { "name": "Surgeonfish", "value": "surgeonfish" },
+      { "name": "Tilapia", "value": "tilapia" },
+      { "name": "Toadfish", "value": "toadfish" },
+      { "name": "Tomcod", "value": "tomcod" },
+      { "name": "Tripletail", "value": "tripletail" },
+      { "name": "Tuskfish", "value": "tuskfish" },
+      { "name": "Wolffish", "value": "wolffish" },
+      { "name": "Yellowfin Tuna", "value": "yellowfin tuna" },
+      { "name": "Zander", "value": "zander" },
+      { "name": "Zebra Fish", "value": "zebra fish" }
+        ]);
   const [imageData, setImageData] = useState(0);
   const [imageObj, setImageObj] = useState(
     contextData.state.framesData && contextData.state.framesData.length > 0
@@ -130,6 +181,7 @@ export default function AnnotationEditor(props) {
   const [isChecked, setChecked] = useState(false);
   const [selectId,setSelectId]=useState("");
   const [fieldInfo,setFieldInfo]=useState([]);
+
   const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
@@ -188,7 +240,6 @@ export default function AnnotationEditor(props) {
   }
   };
   const onSelect = (fieldId) => {
-    console.log("fielID",fieldId);
     setSelectId(fieldId);
   };
   const handleChangeData=(e,id)=>{
@@ -278,7 +329,9 @@ else{
     transformerBackground: "#5c7cfa",
     transformerSize: 10,
   };
-
+const clearAnnotation=()=>{
+  setAnnotations([]);
+}
   return (
     <>
       <div className={classes.backButton}>
@@ -347,6 +400,7 @@ else{
                   ref={imageRef}
                 >
                   <ReactPictureAnnotation
+                  annotationData={annotations}
                     annotationStyle={defaultShapeStyle}
                     showInput={true}
                     image={
@@ -424,6 +478,14 @@ else{
                       buttonText={"Submit XMl"}
                       handleSubmit={handleSubmit(getImage)}
                       backgroundColor="#8c7eff"
+                      borderRadius={"10px"}
+                    />
+                  </div>
+                  <div>
+                  <ActionButton
+                      buttonText={"Clear Labels"}
+                      handleSubmit={clearAnnotation}
+                      backgroundColor="#8a7efb"
                       borderRadius={"10px"}
                     />
                   </div>
