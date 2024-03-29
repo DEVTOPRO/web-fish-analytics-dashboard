@@ -3,8 +3,8 @@ import React, {
   useEffect,
   useRef,
   useContext,
-  useCallback,
   useMemo,
+  useLayoutEffect,
 } from "react";
 import { ReactPictureAnnotation ,DefaultInputSection} from "react-picture-annotation";
 import Context from "../context/Context";
@@ -26,6 +26,14 @@ import { defaultTimeAndDateFormater } from "../utils/utilSub/Date";
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import CheckBox from "../common/components/CheckBox";
 import {colorCodes} from "../utils/utilSub/localization";
+import EngineeringIcon from '@mui/icons-material/Engineering';
+import UpdateIcon from '@mui/icons-material/Update';
+import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
+import Accordion from "../common/components/AccordianData";
+import Chips from "../common/components/Chips";
+import {speciesCreateOrUpdate,listOfSpecies} from "../api/apiSection/apiUrlConstent";
+import ErrorMessage from "../common/components/ErrorMessage";
+import service from "../api/apiSection/service";
 const useStyles = makeStyles((theme) => ({
   backButton: {
     padding: "2% 10px 10px",
@@ -46,10 +54,15 @@ const useStyles = makeStyles((theme) => ({
   },
   submitButton: {
     padding: "10px 0px",
+    textAlign:"center"
   },
   annotationInput:{
     display:'flex',
     justifyContent:"space-between"
+  },
+  editorActions:{
+    border:'1px soild red',
+    borderRadius:"13px"
   }
 }));
 export default function AnnotationEditor(props) {
@@ -70,104 +83,7 @@ export default function AnnotationEditor(props) {
   const contextData = useContext(Context);
   const [annotations, setAnnotations] = React.useState([]);
   const [colorCode, setColorCode] = useState(0);
-  const [typeOfSpecies, setTypeOfSpecies] = useState([
-      { "name": "Salmon", "value": "salmon" },
-      { "name": "Trout", "value": "trout" },
-      { "name": "Walleye", "value": "walleye" },
-      { "name": "Yellow Perch", "value": "yellow perch" },
-      { "name": "Barramundi", "value": "barramundi" },
-      { "name": "Bluegill", "value": "bluegill" },
-      { "name": "Catfish", "value": "catfish" },
-      { "name": "Chinook Salmon", "value": "chinook salmon" },
-      { "name": "Coho Salmon", "value": "coho salmon" },
-      { "name": "Dolphinfish", "value": "dolphinfish" },
-      { "name": "Eel", "value": "eel" },
-      { "name": "Flounder", "value": "flounder" },
-      { "name": "Grouper", "value": "grouper" },
-      { "name": "Halibut", "value": "halibut" },
-      { "name": "Herring", "value": "herring" },
-      { "name": "Mackerel", "value": "mackerel" },
-      { "name": "Mahi Mahi", "value": "mahi mahi" },
-      { "name": "Marlin", "value": "marlin" },
-      { "name": "Perch", "value": "perch" },
-      { "name": "Pike", "value": "pike" },
-      { "name": "Redfish", "value": "redfish" },
-      { "name": "Sablefish", "value": "sablefish" },
-      { "name": "Sardine", "value": "sardine" },
-      { "name": "Swordfish", "value": "swordfish" },
-      { "name": "Tilapia", "value": "tilapia" },
-      { "name": "Tuna", "value": "tuna" },
-      { "name": "Wahoo", "value": "wahoo" },
-      { "name": "Yellowtail", "value": "yellowtail" },
-      { "name": "Bream", "value": "bream" },
-      { "name": "Carp", "value": "carp" },
-      { "name": "Cod", "value": "cod" },
-      { "name": "Dory", "value": "dory" },
-      { "name": "Gar", "value": "gar" },
-      { "name": "Goby", "value": "goby" },
-      { "name": "Mullet", "value": "mullet" },
-      { "name": "Piranha", "value": "piranha" },
-      { "name": "Rudd", "value": "rudd" },
-      { "name": "Scup", "value": "scup" },
-      { "name": "Shad", "value": "shad" },
-      { "name": "Sheepshead", "value": "sheepshead" },
-      { "name": "Tautog", "value": "tautog" },
-      { "name": "Tilefish", "value": "tilefish" },
-      { "name": "Triggerfish", "value": "triggerfish" },
-      { "name": "Wrasse", "value": "wrasse" },
-      { "name": "Alewife", "value": "alewife" },
-      { "name": "Anchovy", "value": "anchovy" },
-      { "name": "Barracuda", "value": "barracuda" },
-      { "name": "Bluefish", "value": "bluefish" },
-      { "name": "Buffalo Fish", "value": "buffalo fish" },
-      { "name": "Butterfish", "value": "butterfish" },
-      { "name": "Chub", "value": "chub" },
-      { "name": "Cobia", "value": "cobia" },
-      { "name": "Crappie", "value": "crappie" },
-      { "name": "Dab", "value": "dab" },
-      { "name": "Dace", "value": "dace" },
-      { "name": "Dartfish", "value": "dartfish" },
-      { "name": "Dogfish", "value": "dogfish" },
-      { "name": "Drum", "value": "drum" },
-      { "name": "Grunion", "value": "grunion" },
-      { "name": "Gudgeon", "value": "gudgeon" },
-      { "name": "Haddock", "value": "haddock" },
-      { "name": "Hake", "value": "hake" },
-      { "name": "Hoki", "value": "hoki" },
-      { "name": "Jackfish", "value": "jackfish" },
-      { "name": "Jewfish", "value": "jewfish" },
-      { "name": "John Dory", "value": "john dory" },
-      { "name": "Lingcod", "value": "lingcod" },
-      { "name": "Lizardfish", "value": "lizardfish" },
-      { "name": "Mandarin Fish", "value": "mandarin fish" },
-      { "name": "Menhaden", "value": "menhaden" },
-      { "name": "Monkfish", "value": "monkfish" },
-      { "name": "Opah", "value": "opah" },
-      { "name": "Orange Roughy", "value": "orange roughy" },
-      { "name": "Parrotfish", "value": "parrotfish" },
-      { "name": "Pomfret", "value": "pomfret" },
-      { "name": "Rainbow Trout", "value": "rainbow trout" },
-      { "name": "Ribbonfish", "value": "ribbonfish" },
-      { "name": "Rockfish", "value": "rockfish" },
-      { "name": "Rosefish", "value": "rosefish" },
-      { "name": "Ruffe", "value": "ruffe" },
-      { "name": "Sailfish", "value": "sailfish" },
-      { "name": "Sauger", "value": "sauger" },
-      { "name": "Scorpionfish", "value": "scorpionfish" },
-      { "name": "Silverside", "value": "silverside" },
-      { "name": "Sole", "value": "sole" },
-      { "name": "Sturgeon", "value": "sturgeon" },
-      { "name": "Surgeonfish", "value": "surgeonfish" },
-      { "name": "Tilapia", "value": "tilapia" },
-      { "name": "Toadfish", "value": "toadfish" },
-      { "name": "Tomcod", "value": "tomcod" },
-      { "name": "Tripletail", "value": "tripletail" },
-      { "name": "Tuskfish", "value": "tuskfish" },
-      { "name": "Wolffish", "value": "wolffish" },
-      { "name": "Yellowfin Tuna", "value": "yellowfin tuna" },
-      { "name": "Zander", "value": "zander" },
-      { "name": "Zebra Fish", "value": "zebra fish" }
-        ]);
+  const [typeOfSpecies, setTypeOfSpecies] = useState([]);
   const [imageData, setImageData] = useState(0);
   const [imageObj, setImageObj] = useState(
     contextData.state.framesData && contextData.state.framesData.length > 0
@@ -181,8 +97,8 @@ export default function AnnotationEditor(props) {
   const [isChecked, setChecked] = useState(false);
   const [selectId,setSelectId]=useState("");
   const [fieldInfo,setFieldInfo]=useState([]);
-
-  const imageAnnotator = () => {
+  const [specieModel,setSpecieModel]=useState({model:false});
+    const imageAnnotator = () => {
     let imageObj = contextData.state.framesData.find(
       (imageInfo, index) => index == imageData
     );
@@ -194,11 +110,23 @@ export default function AnnotationEditor(props) {
   };
   const handleModalClose = () => {
     setModel(false);
+    setSpecieModel({model:false});
+    reset()
   };
   const randomColor = () => {
     return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
   };
-
+useLayoutEffect(()=>{
+service.get(listOfSpecies).then((response)=>{
+if(response.data.status=="success"){
+setTypeOfSpecies(response.data.data);
+}else{
+  alert("Tecnical error")
+}
+}).catch((e)=>{
+  alert("Please contact with admin team")
+})
+},[])
   const getImage = (data) => {
     console.log(data, "data");
     console.log("Final Data",annotations);
@@ -332,6 +260,45 @@ else{
 const clearAnnotation=()=>{
   setAnnotations([]);
 }
+const specieHandler=(key)=>{
+  console.log(key)
+  if(key){
+    setSpecieModel({model:true,update:true})
+  }else{
+  setSpecieModel({model:true,update:false})
+  }
+}
+const speciesCreation=(data)=>{
+  let specieInfo={}
+  if(specieModel.update){
+    specieInfo.speciesKey=getValues("updateSpecieName");
+    specieInfo.speciesValue=getValues("fishType");
+    specieInfo.isUpdateKey=true
+  }else{
+    specieInfo.speciesKey=getValues("addSpecieName");
+    specieInfo.speciesValue=getValues("addSpecieName").toLowerCase();
+  }
+  console.log("data", Object.values(specieInfo).length);
+  // if(){
+  //   setErrorMessage(null)
+  // service.create(speciesCreateOrUpdate,specieInfo).then((response)=>{
+  //   if(response.data.status==="success"){
+  //     alert(response.data.statusMessage);
+  //     setTypeOfSpecies(response.data.data);
+  //     reset();
+  //     setSpecieModel({model:false});
+  //   }else{
+  //     alert(response.data.statusMessage);
+  //     setSpecieModel({model:false});
+  //   }
+  //   }).catch((e)=>{
+  //     alert("Please contact with admin team")
+  //   })
+  // }else{
+  //   setErrorMessage("All fileds are manadatory");
+  // }
+ 
+}
   return (
     <>
       <div className={classes.backButton}>
@@ -389,6 +356,94 @@ const clearAnnotation=()=>{
                   item
                   xs={12}
                   sm={12}
+                  md={12}
+                  lg={12}
+                  xl={12}
+                  sx={{ padding: "10px 0px" }}
+                >
+                  <Accordion
+                    title={
+                      <Box
+                        component="typography"
+                        sx={{
+                          width: "95%",
+                          fontWeight: "600",
+                          fontSize: "13px",
+                        }}
+                      >
+                        {"Annotation Label Editor"}
+                      </Box>
+                    }
+                    content={
+                      <div>
+                        <Grid
+                          container
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          xl={12}
+                        >
+                          <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={3}
+                            lg={3}
+                            xl={3}
+                            sx={{ textAlign: "center" }}
+                          >
+                            <Chips
+                              icon={<UpdateIcon />}
+                              background={"powderblue"}
+                              label={"Clear Labels"}
+                              handleClick={clearAnnotation}
+                            />
+                          </Grid>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={3}
+                            lg={3}
+                            xl={3}
+                            sx={{ textAlign: "center" }}
+                          >
+                            <Chips
+                              icon={<EngineeringIcon />}
+                              background={"lavenderblush"}
+                              label={"Add Species"}
+                              handleClick={()=>specieHandler(false)}
+                            />
+                          </Grid>
+                          <Grid
+                            item
+                            xs={12}
+                            sm={12}
+                            md={3}
+                            lg={3}
+                            xl={3}
+                            sx={{ textAlign: "center" }}
+                          >
+                            <div>
+                              <Chips
+                                icon={<TipsAndUpdatesIcon />}
+                                background={"lavender"}
+                                label={"Update Species"}
+                                handleClick={() => specieHandler(true)}
+                              />
+                            </div>
+                          </Grid>
+                        </Grid>
+                      </div>
+                    }
+                  />
+                </Grid>
+                <Grid
+                  item
+                  xs={12}
+                  sm={12}
                   md={10}
                   lg={10}
                   xl={10}
@@ -400,7 +455,7 @@ const clearAnnotation=()=>{
                   ref={imageRef}
                 >
                   <ReactPictureAnnotation
-                  annotationData={annotations}
+                    annotationData={annotations}
                     annotationStyle={defaultShapeStyle}
                     showInput={true}
                     image={
@@ -408,18 +463,24 @@ const clearAnnotation=()=>{
                         ? imageObj.imageFrame
                         : "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60"
                     }
-                    inputElement={(value,onChange,onDelete)=>{
-                      return(
-                    <div className={classes.annotationInput}>
-                       <Select
-                            displayValue="name"
-                            keyValue="value"
+                    inputElement={(value, onChange, onDelete) => {
+                      return (
+                        <div className={classes.annotationInput}>
+                          <Select
+                            displayValue="speciesKey"
+                            keyValue="speciesValue"
                             listItems={typeOfSpecies}
-                            handleChange={(e)=>handleChangeData(e)}
-                            inputRef={register(`fishType${fieldSize.length}`, {})}
+                            handleChange={(e) => handleChangeData(e)}
+                            inputRef={register(
+                              `fishType${fieldSize.length}`,
+                              {}
+                            )}
                           />
-                           <IconButton onClick={()=>onDelete()}><DeleteOutlineIcon/></IconButton>
-                    </div>)
+                          <IconButton onClick={() => onDelete()}>
+                            <DeleteOutlineIcon />
+                          </IconButton>
+                        </div>
+                      );
                     }}
                     scrollSpeed={0}
                     onSelect={onSelect}
@@ -465,14 +526,14 @@ const clearAnnotation=()=>{
                     })}
                     type="text"
                   />
-                <CheckBox   
-                   name={"isAnnotation"}
-                   handleChange={checkBoxHandler}
-                   checked={isChecked}
-                   fontSizeLabel={"12px"}
-                   fontWeight={700}
-                  label={"* Label an all annotations"}
-                    />
+                  <CheckBox
+                    name={"isAnnotation"}
+                    handleChange={checkBoxHandler}
+                    checked={isChecked}
+                    fontSizeLabel={"12px"}
+                    fontWeight={700}
+                    label={"* Label an all annotations"}
+                  />
                   <div className={classes.submitButton}>
                     <ActionButton
                       buttonText={"Submit XMl"}
@@ -481,14 +542,7 @@ const clearAnnotation=()=>{
                       borderRadius={"10px"}
                     />
                   </div>
-                  <div>
-                  <ActionButton
-                      buttonText={"Clear Labels"}
-                      handleSubmit={clearAnnotation}
-                      backgroundColor="#8a7efb"
-                      borderRadius={"10px"}
-                    />
-                  </div>
+                
                 </Grid>
               </Grid>
             </div>
@@ -514,6 +568,74 @@ const clearAnnotation=()=>{
           handleClose={handleModalClose}
           open={model}
           disableWidth={false}
+        />
+      </div>
+      
+      <div>
+        <CustomModel
+          paddingTop={"0px"}
+          modalContent={
+            <div>
+               {errorMessage && (
+                <AlertMessage message={errorMessage} status={"error"} />
+              )}
+             {specieModel.update? 
+             <div>
+              <Select
+                 displayValue="speciesKey"
+                  keyValue="speciesValue" 
+                  listItems={typeOfSpecies}
+                            handleChange={(e) => handleChangeData(e)}
+                            inputRef={register(
+                              `fishType`
+                            )}
+                          />
+                            <div>
+                      {errors &&
+                        errors.fishType &&
+                        errors.fishType.type === "required" && (
+                          <ErrorMessage message={"required !!"} />
+                        )}
+                    </div>
+              <Label labelName={"Update Species Name *"} />
+                  <Input
+                    name="specieName"
+                    inputRef={register("updateSpecieName", { })}
+                    type="text"
+                  />
+                   {errors &&
+                        errors.updateSpecieName &&
+                        errors.updateSpecieName.type === "required" && (
+                          <ErrorMessage message={"required !!"} />
+                        )}
+                </div>:<div style={{ padding: "12px" }}>
+              <Label labelName={"Species Name *"} />
+                  <Input
+                    name="specieName"
+                    inputRef={register("addSpecieName", { })}
+                    type="text"
+                  />
+                  {errors &&
+                        errors.addSpecieName &&
+                        errors.addSpecieName.type === "required" && (
+                          <ErrorMessage message={"required !!"} />
+                        )}
+              </div>}
+              <div className={classes.submitButton}>
+                    <ActionButton
+                      buttonText={"Submit"}
+                      handleSubmit={speciesCreation}
+                      backgroundColor="#8c7eff"
+                      width={"200px"}
+                      borderRadius={"10px"}
+                    />
+                  </div>
+            </div>
+          }
+          modalTitle={specieModel.update?"Update Species Name":"Add New Species"}
+          handleClose={handleModalClose}
+          otpModal={true}
+          open={specieModel.model}
         />
       </div>
     </>
