@@ -93,7 +93,7 @@ export default function HomePage(props) {
           alert("Technical error");
         }
       })
-      .catch((e) => alert("Please contact to Research Team"));
+      .catch((e) => alert("Please Contact Research Team"));
   }, []);
 
   const fileHandler = (e,key) => {
@@ -113,7 +113,7 @@ export default function HomePage(props) {
         .then((response) => {
           if (response.data.status == "success") {
             setErrorMessage({
-              message: "Information loaded successfully",
+              message: "Information successfully loaded",
               status: "success",
             });
             response.data.data &&
@@ -124,7 +124,7 @@ export default function HomePage(props) {
             setErrorMessage({ message: "Technical Error", status: "error" });
           }
         })
-        .catch((e) => alert("Please contact to Research Team"));
+        .catch((e) => alert("Please Contact Research Team"));
     } else {
       if(fileData&&fileData.name!=null){
        fileData.isActive=true;
@@ -148,7 +148,7 @@ export default function HomePage(props) {
           <div>
             <div className={classes.titleRoot}>
               <Title
-                title="Welcome to Anotation analyer from stream from frigate Information"
+                title="Welcome to Annotation Analyzer of frigate data"
                 style={customTitleStyle}
               />
               <Tooltip title="Upload Your Clip" placement="bottom">
@@ -193,7 +193,7 @@ export default function HomePage(props) {
                         cardContent={
                           <div className={classes.fileCard}>
                             <div>{fileData.name}</div>
-                            <CloseIcon onClick={(e)=>fileHandler(e,"cancle")}/>
+                            <CloseIcon onClick={(e)=>fileHandler(e,"cancel")}/>
                           </div>
                         }
                       />
@@ -274,7 +274,7 @@ export default function HomePage(props) {
           camerasList={camerasList}
         />
       ) : (
-        <div><h2>{"#Waiting for the Loading Infromation . . ."}</h2><br/><br/></div>
+        <div><h2>{"#Waiting for the Information to load . . ."}</h2><br/><br/></div>
       )}
     </div>}
     </Box>

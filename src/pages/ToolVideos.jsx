@@ -81,7 +81,7 @@ export default function VideoCollection(props) {
           }
         })
         .catch((e) => {
-          alert("Please contact to research team");
+          alert("Please Contact Research Team");
           setLoading(false);
         });
     }

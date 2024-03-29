@@ -290,7 +290,7 @@ else{
             setAnnotations(data);
             setErrorMessage(null);
           } else {
-            setErrorMessage("Please Annontate the within image range");
+            setErrorMessage("Please Annotate within the image range");
           }
           arrayId.push({id:val.id,colorCode:colorLabel[index].code});
         });
