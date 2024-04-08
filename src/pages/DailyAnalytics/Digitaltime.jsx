@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ScaleIcon from '@mui/icons-material/Scale';
 import { makeStyles } from '@mui/styles';
-import MonitorHeartSharpIcon from '@mui/icons-material/MonitorHeartSharp';
 import MonitorWeightIcon from "../../assets/monitorIcon.svg"
 import CheckCircleSharpIcon from '@mui/icons-material/CheckCircleSharp';
 import ProgressLoader from "./ProgressLoder";
@@ -21,7 +20,7 @@ progressLoader:{
 export default function DigitalClock() {
   const classes = useStyles();
   const [currentTime, setCurrentTime] = useState('');
-
+  const [progress, setProgress] = React.useState(10);
   useEffect(() => {
     const interval = setInterval(() => {
       const now = new Date();
@@ -31,8 +30,13 @@ export default function DigitalClock() {
       const formattedTime = `${hours}:${minutes}:${seconds}`;
       setCurrentTime(formattedTime);
     }, 1000);
-
-    return () => clearInterval(interval);
+    const timer = setInterval(() => {
+      setProgress((prevProgress) => (prevProgress >= 100 ? 0 : prevProgress + 10));
+    }, 20000);
+    return () => {
+      clearInterval(timer);
+      clearInterval(interval);
+    };
   }, []);
 
   const currentDate = new Date().toLocaleDateString();
@@ -45,7 +49,9 @@ export default function DigitalClock() {
       <div className={classes.subRoot}>
         <div><CheckCircleSharpIcon sx={{color:"green",fontSize:'2rem' }}/></div>
         <h2>{currentTime}   <span>{currentDate}</span></h2>
-       <div className={classes.progressLoader}> <ProgressLoader/></div>
+       <div className={classes.progressLoader}>
+       <ProgressLoader progress={progress}/>     
+       </div>
       </div>
      
     </div>

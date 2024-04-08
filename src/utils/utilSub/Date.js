@@ -84,9 +84,9 @@ export const defaultTimeAndDateFormater = () => {
   let regex = /[,\s;:]+/;
   return  eventDate.toLocaleString().split(regex).join("");
 };
-export const before30DayDate=()=>{
+export const beforeDaysDate=(days)=>{
 let todayDate=new Date();
-todayDate.setDate(new Date().getDate() - 30);
+days?todayDate.setDate(new Date().getDate() - days):todayDate.setDate(new Date().getDate() - 30);
 let day = todayDate.getDate();
 let month = todayDate.getMonth() + 1;
 let year = todayDate.getFullYear();

@@ -5,14 +5,15 @@ import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from 'recha
 
 export default function PieChart2(props){
     // Mock data representing the number of videos with and without fish
+    let percentage=(props.data.totalScore/props.data.today)*100;
+    console.log(percentage);
 const data = [
-    { name: 'Videos With Fish', value: 6 }, // Example value for videos with fish
-    { name: 'Videos Without Fish', value: 341 }, // Example value for videos without fish
-    { name: 'Videos which may contain Fish', value: 13 },
+    { name: 'Fish avalible Score', value:percentage  }, // Example value for videos with fish
+    { name: 'Fish Pending Score', value: 100-percentage }, // Example value for videos without fish
   ];
-  const COLORS = ['#0088FE', '#FFBB28', '#FF2D2A']; // Colors for each slice
+  const COLORS = ['#0088FE', '#8884d8', '#FF2D2A']; // Colors for each slice
     return (
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="70%" height={400}>
         <PieChart>
           <Pie
             data={data}

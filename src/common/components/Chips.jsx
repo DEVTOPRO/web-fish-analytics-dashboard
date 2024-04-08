@@ -6,7 +6,7 @@ export default function Chips(props) {
 
   return (
     <Stack direction="row" spacing={1}>
-      <Chip style={{background:props.background}} icon={props.icon} label={props.label} variant="outlined" onClick={props.handleClick} />
+      <Chip style={{background:props.background,padding:props.padding}} icon={props.icon} label={props.label} variant="outlined" onClick={props.handleClick} />
     </Stack>
   );
 }

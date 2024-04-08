@@ -18,7 +18,8 @@ export default function AreaChart (props) {
       padding: '20px',
       margin: '10px',
       textAlign: 'center',
-      backgroundColor: '#f9f9f9'
+      // backgroundColor: '#f9f9f9'
+      background:"linear-gradient(to right top, #968eff, #00bbff, #00dcff, #00f2c0, #63fb4c)"
     }}>
       <h2>{title}</h2>
       <p>{count} Fishes Detected</p>
@@ -26,8 +27,8 @@ export default function AreaChart (props) {
   }
   return (
     <div style={{ display: 'flex', justifyContent: 'space-around', padding: '20px' }}>
-      <Card title="Today" count={fishCounts.today} />
-      <Card title="Yesterday" count={fishCounts.yesterday} />
+      <Card title="Today" count={props.totalEventsCount.today} />
+      <Card title="Yesterday" count={props.totalEventsCount.yestday} />
     </div>
   );
 };

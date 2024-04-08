@@ -57,7 +57,7 @@ fontSize:'16px'
 
 export default function DrawerMainPage (props) {
   const classes = useStyles()
-  const leftMenu = [{name:'Daily analysis',path: "/home-preview"}, {name:'Detecion Repo',path: "/analyticsDetecionPage"},{name:'Clips Repos',path:'/videoClipsPage',},{name:'Data Prep Tool',path:'/'}]
+  const leftMenu = [{name:'Daily analysis',path: "/home-preview"}, {name:'Detecion Repo',path: "/analyticsDetecionPage"},{name:'Data Prep Tool',path:'/DataPreTool'}]
   const [highlightItem,setHighlightItem]=useState("Daily analysis")
   const handleLeftMenu = (path,name) => {
     props.Redirectpath(path)

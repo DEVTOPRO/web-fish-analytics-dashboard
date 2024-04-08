@@ -26,14 +26,13 @@ export default function Routers(Redirectpath, getConstValue) {
             element: <DailyAnalysis Redirectpath={Redirectpath} />,
           },
           {
-            path: "/videoClipsPage",
-            element: <ClipsRepo Redirectpath={Redirectpath} />,
-          },
-          {
             path: "/analyticsDetecionPage",
             element: <DetecionsRepo Redirectpath={Redirectpath} />
           },
-          
+          {
+            path: "/DataPreTool",
+            element: <HomePage Redirectpath={Redirectpath} />,
+          },
           {path: "/video-farmes-viewer", element: <VideoCollection  Redirectpath={Redirectpath}/>},
           {path: "/video-farmes-extactor", element: <AnnotationEditor  Redirectpath={Redirectpath}/>}
         ]
