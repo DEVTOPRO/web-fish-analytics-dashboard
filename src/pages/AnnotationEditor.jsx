@@ -279,24 +279,24 @@ const speciesCreation=(data)=>{
     specieInfo.speciesValue=getValues("addSpecieName").toLowerCase();
   }
   console.log("data", Object.values(specieInfo).length);
-  // if(){
-  //   setErrorMessage(null)
-  // service.create(speciesCreateOrUpdate,specieInfo).then((response)=>{
-  //   if(response.data.status==="success"){
-  //     alert(response.data.statusMessage);
-  //     setTypeOfSpecies(response.data.data);
-  //     reset();
-  //     setSpecieModel({model:false});
-  //   }else{
-  //     alert(response.data.statusMessage);
-  //     setSpecieModel({model:false});
-  //   }
-  //   }).catch((e)=>{
-  //     alert("Please contact with admin team")
-  //   })
-  // }else{
-  //   setErrorMessage("All fileds are manadatory");
-  // }
+  if(specieInfo&&Object.values(specieInfo).length>0){
+    setErrorMessage(null)
+  service.create(speciesCreateOrUpdate,specieInfo).then((response)=>{
+    if(response.data.status==="success"){
+      alert(response.data.statusMessage);
+      setTypeOfSpecies(response.data.data);
+      reset();
+      setSpecieModel({model:false});
+    }else{
+      alert(response.data.statusMessage);
+      setSpecieModel({model:false});
+    }
+    }).catch((e)=>{
+      alert("Please contact with admin team")
+    })
+  }else{
+    setErrorMessage("All fileds are manadatory");
+  }
  
 }
   return (
