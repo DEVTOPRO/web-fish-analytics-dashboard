@@ -1,4 +1,4 @@
-import * as React from 'react'
+import { useState,useContext } from 'react'
 import Box from '@mui/material/Box'
 import Drawer from '@mui/material/Drawer'
 import AppBar from '@mui/material/AppBar'
@@ -10,7 +10,8 @@ import ListItemText from '@mui/material/ListItemText'
 import { Grid } from '@mui/material';
 import { Outlet, Link, useRoutes, useParams } from 'react-router-dom'
 import { makeStyles } from '@mui/styles'
-import { useState } from 'react'
+import Context from '../context/Context';
+
 const drawerWidth = 240
 
 const useStyles = makeStyles(theme => ({
@@ -56,10 +57,14 @@ fontSize:'16px'
 }))
 
 export default function DrawerMainPage (props) {
-  const classes = useStyles()
+  const classes = useStyles();
+  const contextData=useContext(Context);
   const leftMenu = [{name:'Daily analysis',path: "/home-preview"}, {name:'Detecion Repo',path: "/analyticsDetecionPage"},{name:'Data Prep Tool',path:'/DataPreTool'}]
   const [highlightItem,setHighlightItem]=useState("Daily analysis")
   const handleLeftMenu = (path,name) => {
+    if(contextData.state.detecionPath){
+      contextData.dispatch({type:"detecionPath",value:false});
+    }
     props.Redirectpath(path)
     setHighlightItem(name)
   }

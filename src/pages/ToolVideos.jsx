@@ -67,6 +67,9 @@ export default function VideoCollection(props) {
       }
     } else {
     setLoading(true);
+    if(contextData&&contextData.state.detecionPath){
+      recordLoader(contextData.state.detecionPath);
+    }else{
       service
         .get(
           `${recordSourcePath}subPath=${contextData.state.path ? contextData.state.path : window.sessionStorage.getItem("viewPath")}`
@@ -85,6 +88,7 @@ export default function VideoCollection(props) {
           setLoading(false);
         });
     }
+  }
   }, []);
 
   const extractImages = () => {
@@ -146,6 +150,7 @@ export default function VideoCollection(props) {
           if (videoRef.current) {
             videoRef.current.src = convertedData;
           }
+      setLoading(false);
         } else {
           alert("Technical Error");
         }

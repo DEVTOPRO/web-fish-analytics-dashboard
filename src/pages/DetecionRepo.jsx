@@ -1,4 +1,4 @@
-import  React ,{useState,useEffect,useLayoutEffect, useRef}from 'react'
+import  React ,{useState,c,useLayoutEffect, useRef, useContext}from 'react'
 import { makeStyles } from '@mui/styles';
 import CameraTwoToneIcon from '@mui/icons-material/CameraTwoTone';
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ import Input from '../common/components/Input';
 import {timeOutCaller} from "../utils/utilSub/ArrayMethods";
 import testVideo from "../assets/testclip.MP4";
 import CardLayout from "../common/components/CardLayout";
+import Context from "../context/Context";
 const useStyles = makeStyles(theme => ({
     root :{
         padding:"3%",
@@ -43,9 +44,9 @@ const customTitleStyle = {
 const buttonCustomStyle={ padding:'29px 20px 0px'};
 export default function DetecionsRepo(props){
   const videoRef=useRef();
+  const context=useContext(Context)
   const classes = useStyles();
     const [recordInfo, setRecordInfo] = useState([]);
-    // const [recordBasePath,setRecordBasePath]=useState([])
   const [errorMessage, setErrorMessage] = useState(null);
   const [loading,setLoading]=useState(false);
   const[videoSourcePath,setvideoSourcePath]=useState([]);
@@ -98,15 +99,17 @@ export default function DetecionsRepo(props){
     })
     .catch((e) => alert("Please contact to research team"));
     }
-    const trainDataHandler=()=>{
+    const trainDataHandler=(subSourcePath)=>{
     console.log("Tarin Data handler");
+    context.dispatch({type:"detecionPath",value:subSourcePath});
+    props.Redirectpath("/video-farmes-viewer");
     };
     const getDetecionInfo=(data)=>{
       console.log("recordInfo",data);
       setLoading(true);
       service
         .get(
-          `${recordSourcePath}subPath=${data.videoPath}`
+          `${recordSourcePath}subPath=${data.videoPath.replace("recordings","clips")}`
         )
         .then((respones) => {
           if (respones.data.status == "success" && respones.data.data) {
@@ -216,7 +219,7 @@ export default function DetecionsRepo(props){
 title={"Fish"}
 additionalInfo={data.url.split("/").join(" ")}
 viewHandler={()=>videoHandler(data.url)}
-trainHandler={trainDataHandler}
+trainHandler={()=>trainDataHandler(data.url)}
 />
 </div>))}
 </Grid>

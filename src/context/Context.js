@@ -12,7 +12,7 @@ function reducer(state, action) {
 
 
 function ContextSetter(props) {
-  const initialState={ loading: false, isAuthorized: false, userData: {} }
+  const initialState={ loading: false, isAuthorized: false, userData: {},detecionPath:false }
 	const [state, dispatch] = useReducer(reducer,initialState); 
 	return (
 		<Provider
